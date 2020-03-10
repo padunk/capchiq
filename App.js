@@ -17,10 +17,12 @@ import {
   TextInput,
   StatusBar,
 } from 'react-native';
+import 'react-native-gesture-handler';
+import {NavigationContainer} from '@react-navigation/native';
 
 const App = () => {
   return (
-    <>
+    <NavigationContainer>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.wrapper}>
         <View>
@@ -36,7 +38,7 @@ const App = () => {
         </View>
         <Text>Register</Text>
       </SafeAreaView>
-    </>
+    </NavigationContainer>
   );
 };
 
