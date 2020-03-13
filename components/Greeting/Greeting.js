@@ -29,7 +29,6 @@ function Greeting({navigation}) {
           <Text
             onPress={() => navigation.navigate('Login')}
             style={styles.footerLink}>
-            {' '}
             Log in
           </Text>
         </Text>
