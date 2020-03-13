@@ -1,53 +1,51 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
  * @format
  * @flow
  */
 
-import React from 'react';
-import {
-  Button,
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  TextInput,
-  StatusBar,
-} from 'react-native';
+import React, {useState, useEffect} from 'react';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
+import * as firebase from 'firebase';
+
+import Loading from './components/Loading/Loading';
+import AuthStack from './components/AuthStack/AuthStack';
+import AppTab from './components/AppTab/AppTab';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyB36R8p5HVO7CH7ZHyx52AKVCh_PXlHxdc',
+  authDomain: 'capchiq.firebaseapp.com',
+  databaseURL: 'https://capchiq.firebaseio.com',
+  projectId: 'capchiq',
+  storageBucket: 'capchiq.appspot.com',
+  messagingSenderId: '207415477786',
+  appId: '1:207415477786:web:5a254bf3c0a7d19075f3a3',
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
 
 const App = () => {
+  const [user, setUser] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(usr => {
+      if (usr) {
+        setUser[usr];
+      }
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <NavigationContainer>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView style={styles.wrapper}>
-        <View>
-          <Text>ENTER</Text>
-        </View>
-        <View>
-          <TextInput placeholder="Your name" />
-          <TextInput placeholder="Email" />
-        </View>
-        <Text>Forgot password?</Text>
-        <View>
-          <Button title="ENTER" />
-        </View>
-        <Text>Register</Text>
-      </SafeAreaView>
+      {user ? <AppTab /> : <AuthStack />}
     </NavigationContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 export default App;
