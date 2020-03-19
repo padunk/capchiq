@@ -25,7 +25,7 @@ function Greeting({navigation}) {
       </Center>
       <View style={styles.footer}>
         <Text style={styles.footerText}>
-          Have an account already?
+          Have an account already?{' '}
           <Text
             onPress={() => navigation.navigate('Login')}
             style={styles.footerLink}>
