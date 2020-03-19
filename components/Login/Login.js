@@ -21,6 +21,11 @@ const Register = ({navigation}) => {
           />
         </View>
       </View>
+      <View>
+        <Text style={styles.error}>
+          Your email / username didn't match your password.
+        </Text>
+      </View>
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Log in</Text>
       </TouchableOpacity>
@@ -78,6 +83,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     letterSpacing: 1.34,
+  },
+  error: {
+    color: '#CB6BD6',
+    fontSize: 16,
+    marginTop: 20,
   },
   link: {
     color: '#2865D6',
