@@ -1,10 +1,10 @@
 import React from 'react';
-import {Button, StyleSheet, Text, TextInput, View} from 'react-native';
+import {StyleSheet, Text, TextInput, View} from 'react-native';
 
 import Center from '../Center/Center';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
-const Register = () => {
+const Register = ({navigation}) => {
   return (
     <Center>
       <View style={styles.form}>
@@ -29,8 +29,13 @@ const Register = () => {
         <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
       <TouchableOpacity>
-        <Text style={styles.account}>
-          Already have an account? <Text style={styles.link}>Log in</Text>
+        <Text style={styles.inform}>
+          Already have an account?{' '}
+          <Text
+            style={styles.link}
+            onPress={() => navigation.navigate('Login')}>
+            Log in
+          </Text>
         </Text>
       </TouchableOpacity>
     </Center>
@@ -49,7 +54,7 @@ const styles = StyleSheet.create({
   },
   inputTitle: {
     color: '#8560EB',
-    fontSize: 12,
+    fontSize: 14,
     textTransform: 'uppercase',
     width: '100%',
   },
@@ -81,7 +86,7 @@ const styles = StyleSheet.create({
   link: {
     color: '#2865D6',
   },
-  account: {
+  inform: {
     fontSize: 18,
     fontWeight: '600',
   },
