@@ -1,19 +1,40 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import * as firebase from 'firebase';
 
 import Center from '../Center/Center';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const Register = ({navigation}) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const handleLogin = () => {
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .catch(error => setErrorMessage(error.message));
+  };
+
   return (
     <Center>
+      <Text style={styles.title}>Hi, welcome back!</Text>
       <View style={styles.form}>
         <View style={styles.inputWrapper}>
           <Text style={styles.inputTitle}>Email:</Text>
-          <TextInput style={styles.input} placeholder="Email / Username" />
+          <TextInput
+            style={styles.input}
+            placeholder="Email / Username"
+            onChangeText={givenEmail => setEmail(givenEmail)}
+          />
         </View>
         <View>
-          <Text style={styles.inputTitle}>Password:</Text>
+          <Text
+            style={styles.inputTitle}
+            onChangeText={givenPassword => setPassword(givenPassword)}>
+            Password:
+          </Text>
           <TextInput
             style={styles.input}
             secureTextEntry
@@ -22,12 +43,10 @@ const Register = ({navigation}) => {
         </View>
       </View>
       <View>
-        <Text style={styles.error}>
-          Your email / username didn't match your password.
-        </Text>
+        {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
       </View>
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Log in</Text>
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Log In</Text>
       </TouchableOpacity>
       <TouchableOpacity>
         <Text style={styles.inform}>
@@ -44,6 +63,11 @@ const Register = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  title: {
+    fontSize: 30,
+    color: '#2865D6',
+    marginBottom: 30,
+  },
   form: {
     marginHorizontal: 40,
     width: '100%',
@@ -64,7 +88,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     height: 40,
     fontSize: 18,
-    color: '#F59FA2',
   },
   button: {
     height: 55,
@@ -88,6 +111,8 @@ const styles = StyleSheet.create({
     color: '#CB6BD6',
     fontSize: 16,
     marginTop: 20,
+    fontWeight: '600',
+    textAlign: 'center',
   },
   link: {
     color: '#2865D6',

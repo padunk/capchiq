@@ -1,20 +1,49 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import * as firebase from 'firebase';
 
 import Center from '../Center/Center';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const Register = ({navigation}) => {
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const handleRegister = () => {
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(userCredentials => {
+        return userCredentials.user.updateProfile({
+          displayName: fullName.trim(),
+        });
+      })
+      .catch(error => setErrorMessage(error.message));
+  };
+
   return (
     <Center>
+      <Text style={styles.title}>
+        {"Hello!\nWe're glad you're joining us."}
+      </Text>
       <View style={styles.form}>
         <View style={styles.inputWrapper}>
-          <Text style={styles.inputTitle}>Name:</Text>
-          <TextInput style={styles.input} placeholder="Julia Sho" />
+          <Text style={styles.inputTitle}>Full Name:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Julia Sho"
+            onChangeText={givenName => setFullName(givenName)}
+          />
         </View>
         <View style={styles.inputWrapper}>
           <Text style={styles.inputTitle}>Email:</Text>
-          <TextInput style={styles.input} placeholder="Email" />
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            onChangeText={givenEmail => setEmail(givenEmail)}
+          />
         </View>
         <View>
           <Text style={styles.inputTitle}>Password:</Text>
@@ -22,10 +51,14 @@ const Register = ({navigation}) => {
             style={styles.input}
             secureTextEntry
             placeholder="Password"
+            onChangeText={givenPassword => setPassword(givenPassword)}
           />
         </View>
       </View>
-      <TouchableOpacity style={styles.button}>
+      <View>
+        {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
+      </View>
+      <TouchableOpacity style={styles.button} onPress={handleRegister}>
         <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
       <TouchableOpacity>
@@ -43,6 +76,12 @@ const Register = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  title: {
+    fontSize: 25,
+    color: '#2865D6',
+    textAlign: 'center',
+    marginBottom: 30,
+  },
   form: {
     marginHorizontal: 40,
     width: '100%',
@@ -63,7 +102,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     height: 40,
     fontSize: 18,
-    color: '#F59FA2',
   },
   button: {
     height: 55,
@@ -82,6 +120,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     letterSpacing: 1.34,
+  },
+  error: {
+    color: '#CB6BD6',
+    fontSize: 16,
+    marginTop: 20,
+    fontWeight: '600',
+    textAlign: 'center',
   },
   link: {
     color: '#2865D6',
