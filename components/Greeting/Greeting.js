@@ -1,10 +1,21 @@
-import React from 'react';
+import React, {useCallback, useContext} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {useFocusEffect} from '@react-navigation/native';
+
+import {AuthContext} from '../AuthProvider/AuthProvider';
 
 import Center from '../Center/Center';
 
 function Greeting({navigation}) {
+  const {setLoginError, setRegisterError} = useContext(AuthContext);
+  useFocusEffect(
+    useCallback(() => {
+      setLoginError(null);
+      setRegisterError(null);
+    }, [setLoginError, setRegisterError]),
+  );
+
   return (
     <>
       <Center>

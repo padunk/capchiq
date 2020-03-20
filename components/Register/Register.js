@@ -1,27 +1,15 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import * as firebase from 'firebase';
 
 import Center from '../Center/Center';
+import {AuthContext} from '../AuthProvider/AuthProvider';
 
 const Register = ({navigation}) => {
+  const {registerError: errorMessage, register} = useContext(AuthContext);
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState(null);
-
-  const handleRegister = () => {
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(userCredentials => {
-        return userCredentials.user.updateProfile({
-          displayName: fullName.trim(),
-        });
-      })
-      .catch(error => setErrorMessage(error.message));
-  };
 
   return (
     <Center>
@@ -58,7 +46,9 @@ const Register = ({navigation}) => {
       <View>
         {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
       </View>
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => register(fullName, email, password)}>
         <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
       <TouchableOpacity>
