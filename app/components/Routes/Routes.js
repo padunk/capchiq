@@ -34,11 +34,11 @@ const Routes = () => {
       if (usr) {
         // cookies? token?
         console.log('user is signed in:', user);
-        setUser(usr.email);
+        setUser(usr);
       }
       setLoading(false);
     });
-  }, [setUser, user]);
+  }, [user]);
 
   if (loading) {
     return <Loading />;
