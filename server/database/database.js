@@ -5,7 +5,7 @@ const userPool = new Pool({
     password: "@Susilia121184",
     host: "localhost",
     port: 5432,
-    database: "user_data",
+    database: "capchiq",
 });
 
 module.exports = userPool;
