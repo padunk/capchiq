@@ -12,16 +12,8 @@ import Loading from '../Loading/Loading';
 import AuthStack from '../AuthStack/AuthStack';
 import AppTab from '../AppTab/AppTab';
 import {AuthContext} from '../AuthProvider/AuthProvider';
+import {firebaseConfig} from '../../secret';
 
-const firebaseConfig = {
-  apiKey: 'AIzaSyB36R8p5HVO7CH7ZHyx52AKVCh_PXlHxdc',
-  authDomain: 'capchiq.firebaseapp.com',
-  databaseURL: 'https://capchiq.firebaseio.com',
-  projectId: 'capchiq',
-  storageBucket: 'capchiq.appspot.com',
-  messagingSenderId: '207415477786',
-  appId: '1:207415477786:web:5a254bf3c0a7d19075f3a3',
-};
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 

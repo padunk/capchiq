@@ -60,3 +60,6 @@ buck-out/
 
 # General
 .env
+
+#capchiq
+secret.js
