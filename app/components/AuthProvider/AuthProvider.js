@@ -13,6 +13,7 @@ function AuthProvider({children}) {
   const [user, setUser] = useState(null);
   const [loginError, setLoginError] = useState(null);
   const [registerError, setRegisterError] = useState(null);
+  const [resetPasswordError, setResetPasswordError] = useState(null);
 
   const initialProviderValue = {
     user,
@@ -21,6 +22,7 @@ function AuthProvider({children}) {
     registerError,
     setLoginError,
     setRegisterError,
+    resetPasswordError,
     register: (name, email, password) => {
       firebase
         .auth()
@@ -46,6 +48,18 @@ function AuthProvider({children}) {
       setUser(null);
       // AsyncStorage.removeItem('user');
       firebase.auth().signOut();
+    },
+    resetPassword: (email, onSuccess) => {
+      firebase
+        .auth()
+        .sendPasswordResetEmail(email)
+        .then(function() {
+          console.log('reset password email sent.');
+          setResetPasswordError('Reset password email sent.');
+          let timeout = setTimeout(onSuccess, 3000);
+          // onSuccess();
+        })
+        .catch(error => setResetPasswordError(error.message));
     },
   };
 

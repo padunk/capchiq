@@ -1,33 +1,25 @@
-import React, {useState, useContext} from 'react';
-import {StyleSheet, Text, TextInput, View} from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import React, {useContext, useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import {TextInput, TouchableOpacity} from 'react-native-gesture-handler';
 
 import {AuthContext} from '../AuthProvider/AuthProvider';
 import Center from '../Center/Center';
 
-const Register = ({navigation}) => {
-  const {loginError: errorMessage, login} = useContext(AuthContext);
+const ForgotPassword = ({navigation}) => {
+  const {resetPasswordError: errorMessage, resetPassword} = useContext(
+    AuthContext,
+  );
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
   return (
     <Center>
-      <Text style={styles.title}>Hi, welcome back!</Text>
+      <Text style={styles.title}>Forgot your password?</Text>
       <View style={styles.form}>
         <View style={styles.inputWrapper}>
-          <Text style={styles.inputTitle}>Email / Username:</Text>
+          <Text style={styles.inputTitle}>Email:</Text>
           <TextInput
             style={styles.input}
-            placeholder="Email / Username"
             onChangeText={givenEmail => setEmail(givenEmail)}
-          />
-        </View>
-        <View>
-          <Text style={styles.inputTitle}>Password:</Text>
-          <TextInput
-            style={styles.input}
-            secureTextEntry
-            onChangeText={givenPassword => setPassword(givenPassword)}
           />
         </View>
       </View>
@@ -36,8 +28,8 @@ const Register = ({navigation}) => {
       </View>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => login(email, password)}>
-        <Text style={styles.buttonText}>Log In</Text>
+        onPress={() => resetPassword(email, navigation.navigate('Login'))}>
+        <Text style={styles.buttonText}>Reset Password</Text>
       </TouchableOpacity>
       <TouchableOpacity>
         <Text style={styles.inform}>
@@ -50,20 +42,26 @@ const Register = ({navigation}) => {
         </Text>
       </TouchableOpacity>
       <TouchableOpacity>
-        <Text
-          style={styles.link}
-          onPress={() => navigation.navigate('ForgotPassword')}>
-          Forgot Password
+        <Text style={styles.inform}>
+          Already have an account?{' '}
+          <Text
+            style={styles.link}
+            onPress={() => navigation.navigate('Login')}>
+            Log in
+          </Text>
         </Text>
       </TouchableOpacity>
     </Center>
   );
 };
 
+export default ForgotPassword;
+
 const styles = StyleSheet.create({
   title: {
-    fontSize: 30,
+    fontSize: 25,
     color: '#2865D6',
+    textAlign: 'center',
     marginBottom: 30,
   },
   form: {
@@ -91,7 +89,7 @@ const styles = StyleSheet.create({
     height: 55,
     marginHorizontal: 30,
     marginBottom: 20,
-    backgroundColor: '#2865D6',
+    backgroundColor: '#CB6BD6',
     marginTop: 20,
     padding: 10,
     paddingLeft: 70,
@@ -120,5 +118,3 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
-
-export default Register;
