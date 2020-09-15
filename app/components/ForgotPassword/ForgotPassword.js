@@ -6,7 +6,7 @@ import {AuthContext} from '../AuthProvider/AuthProvider';
 import Center from '../Center/Center';
 
 const ForgotPassword = ({navigation}) => {
-  const {resetPasswordError: errorMessage, resetPassword} = useContext(
+  const {resetPasswordMessage: message, resetPassword} = useContext(
     AuthContext,
   );
   const [email, setEmail] = useState('');
@@ -23,9 +23,7 @@ const ForgotPassword = ({navigation}) => {
           />
         </View>
       </View>
-      <View>
-        {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
-      </View>
+      <View>{message && <Text style={styles.error}>{message}</Text>}</View>
       <TouchableOpacity
         style={styles.button}
         onPress={() => resetPassword(email, navigation.navigate('Login'))}>
