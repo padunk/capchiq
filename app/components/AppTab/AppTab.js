@@ -22,10 +22,10 @@ function AppTab() {
               iconName = 'home';
               break;
             case 'Search':
-              iconName = 'flame';
+              iconName = 'search';
               break;
             case 'Upload':
-              iconName = 'diff-added';
+              iconName = 'flame';
               break;
             case 'Notifications':
               iconName = 'bell';
@@ -36,7 +36,13 @@ function AppTab() {
           }
 
           // You can return any component that you like here!
-          return <Icon name={iconName} size={size} color={color} />;
+          return (
+            <Icon
+              name={iconName}
+              size={route.name === 'Upload' ? 35 : size}
+              color={color}
+            />
+          );
         },
       })}
       tabBarOptions={{
