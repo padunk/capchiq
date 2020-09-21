@@ -10,11 +10,12 @@ export const COLOR = {
   red: 'orangered',
 };
 
-export const styles = StyleSheet.create({
+export const globalStyles = StyleSheet.create({
   title: {
     fontSize: 30,
     color: COLOR.primaryColor,
     marginBottom: 30,
+    padding: 40,
   },
   form: {
     marginHorizontal: 40,
@@ -54,6 +55,7 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     letterSpacing: 1.34,
+    textAlign: 'center',
   },
   error: {
     color: COLOR.primaryColor,

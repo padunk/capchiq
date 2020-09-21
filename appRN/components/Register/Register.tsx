@@ -5,7 +5,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import Center from '../Center/Center';
 import {AuthContext} from '../AuthProvider/AuthProvider';
 import {AuthProps} from '../AuthStack/AuthStack';
-import {styles} from '../Style/styles';
+import {globalStyles} from '../Style/styles';
 
 const Register = ({navigation}: AuthProps) => {
   const {registerError: errorMessage, register} = useContext(AuthContext);
@@ -15,30 +15,30 @@ const Register = ({navigation}: AuthProps) => {
 
   return (
     <Center>
-      <Text style={styles.title}>
+      <Text style={globalStyles.title}>
         {"Hello!\nWe're glad you're joining us."}
       </Text>
-      <View style={styles.form}>
-        <View style={styles.inputWrapper}>
-          <Text style={styles.inputTitle}>Full Name:</Text>
+      <View style={globalStyles.form}>
+        <View style={globalStyles.inputWrapper}>
+          <Text style={globalStyles.inputTitle}>Full Name:</Text>
           <TextInput
-            style={styles.input}
+            style={globalStyles.input}
             placeholder="Julia Sho"
             onChangeText={(givenName) => setFullName(givenName)}
           />
         </View>
-        <View style={styles.inputWrapper}>
-          <Text style={styles.inputTitle}>Email:</Text>
+        <View style={globalStyles.inputWrapper}>
+          <Text style={globalStyles.inputTitle}>Email:</Text>
           <TextInput
-            style={styles.input}
+            style={globalStyles.input}
             placeholder="Email"
             onChangeText={(givenEmail) => setEmail(givenEmail)}
           />
         </View>
         <View>
-          <Text style={styles.inputTitle}>Password:</Text>
+          <Text style={globalStyles.inputTitle}>Password:</Text>
           <TextInput
-            style={styles.input}
+            style={globalStyles.input}
             secureTextEntry
             placeholder="Password"
             onChangeText={(givenPassword) => setPassword(givenPassword)}
@@ -46,18 +46,18 @@ const Register = ({navigation}: AuthProps) => {
         </View>
       </View>
       <View>
-        {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
+        {errorMessage && <Text style={globalStyles.error}>{errorMessage}</Text>}
       </View>
       <TouchableOpacity
-        style={styles.button}
+        style={globalStyles.button}
         onPress={() => register(fullName, email, password)}>
-        <Text style={styles.buttonText}>Register</Text>
+        <Text style={globalStyles.buttonText}>Register</Text>
       </TouchableOpacity>
       <TouchableOpacity>
-        <Text style={styles.inform}>
+        <Text style={globalStyles.inform}>
           Already have an account?{' '}
           <Text
-            style={styles.link}
+            style={globalStyles.link}
             onPress={() => navigation.navigate('Login')}>
             Log in
           </Text>

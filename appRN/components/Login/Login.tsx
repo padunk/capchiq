@@ -5,7 +5,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {AuthContext} from '../AuthProvider/AuthProvider';
 import {AuthProps} from '../AuthStack/AuthStack';
 import Center from '../Center/Center';
-import {styles} from '../Style/styles';
+import {globalStyles} from '../Style/styles';
 
 const Register = ({navigation}: AuthProps) => {
   const {loginError: errorMessage, login} = useContext(AuthContext);
@@ -14,38 +14,38 @@ const Register = ({navigation}: AuthProps) => {
 
   return (
     <Center>
-      <Text style={styles.title}>Hi, welcome back!</Text>
-      <View style={styles.form}>
-        <View style={styles.inputWrapper}>
-          <Text style={styles.inputTitle}>Email / Username:</Text>
+      <Text style={globalStyles.title}>Hi, welcome back!</Text>
+      <View style={globalStyles.form}>
+        <View style={globalStyles.inputWrapper}>
+          <Text style={globalStyles.inputTitle}>Email / Username:</Text>
           <TextInput
-            style={styles.input}
+            style={globalStyles.input}
             placeholder="Email / Username"
             onChangeText={(givenEmail) => setEmail(givenEmail)}
           />
         </View>
         <View>
-          <Text style={styles.inputTitle}>Password:</Text>
+          <Text style={globalStyles.inputTitle}>Password:</Text>
           <TextInput
-            style={styles.input}
+            style={globalStyles.input}
             secureTextEntry
             onChangeText={(givenPassword) => setPassword(givenPassword)}
           />
         </View>
       </View>
       <View>
-        {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
+        {errorMessage && <Text style={globalStyles.error}>{errorMessage}</Text>}
       </View>
       <TouchableOpacity
-        style={styles.button}
+        style={globalStyles.button}
         onPress={() => login(email, password)}>
-        <Text style={styles.buttonText}>Log In</Text>
+        <Text style={globalStyles.buttonText}>Log In</Text>
       </TouchableOpacity>
       <TouchableOpacity>
-        <Text style={styles.inform}>
+        <Text style={globalStyles.inform}>
           New user?{' '}
           <Text
-            style={styles.link}
+            style={globalStyles.link}
             onPress={() => navigation.navigate('Register')}>
             Register
           </Text>
@@ -53,7 +53,7 @@ const Register = ({navigation}: AuthProps) => {
       </TouchableOpacity>
       <TouchableOpacity>
         <Text
-          style={styles.link}
+          style={globalStyles.link}
           onPress={() => navigation.navigate('ForgotPassword')}>
           Forgot Password
         </Text>
