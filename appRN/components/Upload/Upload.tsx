@@ -1,52 +1,65 @@
-import React, {useState} from 'react';
-import {TouchableOpacity, Text, View} from 'react-native';
-import ImagePicker, {ImagePickerOptions} from 'react-native-image-picker';
+import React from 'react';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import ImageCropPicker, {Options} from 'react-native-image-crop-picker';
 import Center from '../Center/Center';
-import {styles} from '../Style/styles';
+import {COLOR, globalStyles} from '../Style/styles';
 
 const Upload = () => {
-  const [videoSource, setVideoSource] = useState('');
+  const videoOptions: Options = {
+    compressVideoPreset: 'HighestQuality',
+    mediaType: 'video',
+  };
 
-  const selectVideoTapped = () => {
-    const options: ImagePickerOptions = {
-      title: 'Video Picker',
-      takePhotoButtonTitle: 'Take Video...',
-      mediaType: 'video',
-      videoQuality: 'medium',
-    };
+  const takeVideo = async () => {
+    try {
+      const recordedVideo = await ImageCropPicker.openCamera(videoOptions);
+      console.log(recordedVideo);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-    ImagePicker.showImagePicker(options, (response) => {
-      console.log('Response = ', response);
-
-      if (response.didCancel) {
-        console.log('User cancelled video picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-      } else {
-        setVideoSource(response.uri);
-      }
-    });
+  const getVideoFromLibrary = async () => {
+    try {
+      const pickedVideo = await ImageCropPicker.openPicker(videoOptions);
+      console.log(pickedVideo);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <Center>
       <View>
-        <View>
-          <Text>Share your best content.</Text>
-        </View>
-        <View>
-          <TouchableOpacity onPress={selectVideoTapped} style={styles.button}>
-            <Text style={styles.buttonText}>Select a Video</Text>
-          </TouchableOpacity>
-        </View>
-        <View>
-          <Text>{videoSource}</Text>
-        </View>
+        <Text style={globalStyles.title}>Share your best content</Text>
+      </View>
+      <View>
+        <TouchableOpacity
+          onPress={takeVideo}
+          style={[globalStyles.button, styles.button]}>
+          <Text style={globalStyles.buttonText}>Take Video</Text>
+        </TouchableOpacity>
+      </View>
+      <View>
+        <TouchableOpacity
+          onPress={getVideoFromLibrary}
+          style={globalStyles.button}>
+          <Text style={[globalStyles.buttonText, styles.buttonText]}>
+            Choose Video from library
+          </Text>
+        </TouchableOpacity>
       </View>
     </Center>
   );
 };
 
 export default Upload;
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: COLOR.primaryColor,
+  },
+  buttonText: {
+    fontSize: 16,
+  },
+});
