@@ -8,6 +8,10 @@ target 'appRN' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
+  pod 'react-native-video', :path => '../node_modules/react-native-video'
+
   target 'appRNTests' do
     inherit! :complete
     # Pods for testing
