@@ -43,7 +43,7 @@ const MainScreen = () => {
 
   React.useEffect(() => {
     const launchKey = 'alreadyLaunched';
-    AsyncStorage.clear();
+    // AsyncStorage.clear();
 
     AsyncStorage.getItem(launchKey).then((val) => {
       if (val === null) {
