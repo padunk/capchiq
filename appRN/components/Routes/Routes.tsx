@@ -31,11 +31,7 @@ const Routes = () => {
     return <Loading />;
   }
 
-  return (
-    <NavigationContainer>
-      {user ? <AppTab /> : <AuthStack />}
-    </NavigationContainer>
-  );
+  return <>{user ? <AppTab /> : <AuthStack />}</>;
 };
 
 export default Routes;
