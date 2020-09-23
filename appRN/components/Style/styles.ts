@@ -8,6 +8,7 @@ export const COLOR = {
   accentColor: '#f59fa2',
   grayColor: '#a0aec0',
   red: 'orangered',
+  redError: 'indianred',
 };
 
 export const globalStyles = StyleSheet.create({
@@ -15,7 +16,7 @@ export const globalStyles = StyleSheet.create({
     fontSize: 30,
     color: COLOR.primaryColor,
     marginBottom: 30,
-    padding: 40,
+    paddingHorizontal: 40,
   },
   form: {
     marginHorizontal: 40,
@@ -44,25 +45,27 @@ export const globalStyles = StyleSheet.create({
     marginBottom: 20,
     backgroundColor: COLOR.secondaryColor,
     marginTop: 20,
-    padding: 10,
-    paddingLeft: 70,
-    paddingRight: 70,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     fontSize: 24,
     borderRadius: 50,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonText: {
     color: COLOR.grayColor,
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     letterSpacing: 1.34,
     textAlign: 'center',
   },
   error: {
-    color: COLOR.primaryColor,
-    fontSize: 16,
-    marginTop: 20,
+    color: COLOR.redError,
+    fontSize: 14,
     fontWeight: '600',
-    textAlign: 'center',
+    textAlign: 'left',
+    textTransform: 'none',
   },
   link: {
     color: COLOR.secondaryColor,
