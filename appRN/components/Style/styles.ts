@@ -9,6 +9,8 @@ export const COLOR = {
   grayColor: '#a0aec0',
   red: 'orangered',
   redError: 'indianred',
+  black: '#0f0f0f',
+  white: '#fdfdfd',
 };
 
 export const globalStyles = StyleSheet.create({
