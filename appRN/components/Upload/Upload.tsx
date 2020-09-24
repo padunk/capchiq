@@ -1,12 +1,23 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Modal,
+  Button,
+} from 'react-native';
 import ImageCropPicker, {Options} from 'react-native-image-crop-picker';
 import Video from 'react-native-video';
+import Icon from 'react-native-vector-icons/AntDesign';
+
+import {windowHeight, windowWidth} from '../../Utils/dimension';
 import Center from '../Center/Center';
 import {COLOR, globalStyles} from '../Style/styles';
 
 const Upload = () => {
-  const [videoURI, setVideoURI] = React.useState<string | null>(null);
+  const [videoPath, setVideoPath] = React.useState<string | null>(null);
+  const [modalOpen, setModalOpen] = React.useState<boolean | undefined>(false);
 
   const videoOptions: Options = {
     compressVideoPreset: 'HighestQuality',
@@ -17,7 +28,8 @@ const Upload = () => {
     try {
       const recordedVideo = await ImageCropPicker.openCamera(videoOptions);
       console.log(recordedVideo);
-      setVideoURI(recordedVideo.path);
+      setVideoPath(recordedVideo.path);
+      setModalOpen(true);
     } catch (error) {
       console.log(error);
     }
@@ -27,6 +39,8 @@ const Upload = () => {
     try {
       const pickedVideo = await ImageCropPicker.openPicker(videoOptions);
       console.log(pickedVideo);
+      setVideoPath(pickedVideo.path);
+      setModalOpen(true);
     } catch (error) {
       console.log(error);
     }
@@ -54,10 +68,26 @@ const Upload = () => {
         </TouchableOpacity>
       </View>
 
-      <View>
-        {videoURI && <Video source={{uri: videoURI}} style={styles.video} />}
-      </View>
-      <View>{videoURI && <Text>{videoURI}</Text>}</View>
+      <Modal visible={modalOpen}>
+        <View style={styles.videoContainer}>
+          <View style={styles.closeWrapper}>
+            <Text style={styles.subTitle}>Preview</Text>
+            <Icon name="close" size={24} onPress={() => setModalOpen(false)} />
+          </View>
+          <View style={styles.videoWrapper}>
+            <Video
+              source={{uri: videoPath!}}
+              style={styles.video}
+              controls={true}
+              fullscreen={true}
+              resizeMode="contain"
+            />
+          </View>
+          <View>
+            <Text>Controls</Text>
+          </View>
+        </View>
+      </Modal>
     </Center>
   );
 };
@@ -71,13 +101,31 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
   },
+  subTitle: {
+    fontSize: 18,
+  },
+  videoContainer: {
+    backgroundColor: COLOR.white,
+  },
+  closeWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  videoWrapper: {
+    display: 'flex',
+    paddingVertical: 40,
+    backgroundColor: COLOR.black,
+    maxHeight: windowHeight * 0.8,
+  },
   video: {
-    position: 'absolute',
-    width: 600,
-    height: 600,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    width: windowWidth,
+    height: windowHeight * 0.6,
+    // borderTopColor: COLOR.accentColor,
+    // borderBottomColor: COLOR.accentColor,
+    // borderWidth: StyleSheet.hairlineWidth,
   },
 });
