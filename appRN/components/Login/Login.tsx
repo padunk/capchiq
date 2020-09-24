@@ -1,6 +1,7 @@
 import React, {useState, useContext} from 'react';
 import {Text, TextInput, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import Icon from 'react-native-vector-icons/Octicons';
 
 import {AuthContext} from '../AuthProvider/AuthProvider';
 import {AuthProps} from '../AuthStack/AuthStack';
@@ -12,6 +13,7 @@ import {capitalizeFirstLetter} from '../../Utils/helpers';
 
 const Login = ({navigation}: AuthProps) => {
   const {loginError: errorMessage, login} = useContext(AuthContext);
+  const [secure, updateSecure] = useState<boolean>(true);
 
   return (
     <Center>
@@ -48,16 +50,25 @@ const Login = ({navigation}: AuthProps) => {
             </View>
             <View style={globalStyles.inputWrapper}>
               <Text style={globalStyles.inputTitle}>Password:</Text>
-              <TextInput
-                placeholder="Password"
-                onChangeText={props.handleChange('password')}
-                value={props.values.password}
-                secureTextEntry={true}
-                autoCompleteType="password"
-                textContentType="password"
-                selectTextOnFocus={true}
-                style={globalStyles.input}
-              />
+              <View style={{position: 'relative'}}>
+                <TextInput
+                  placeholder="Password"
+                  onChangeText={props.handleChange('password')}
+                  value={props.values.password}
+                  secureTextEntry={secure}
+                  autoCompleteType="password"
+                  textContentType="password"
+                  selectTextOnFocus={true}
+                  style={globalStyles.input}
+                />
+                <Icon
+                  style={{position: 'absolute', right: 0, bottom: 11}}
+                  name={secure ? 'eye' : 'eye-closed'}
+                  size={18}
+                  color="gray"
+                  onPress={() => updateSecure(!secure)}
+                />
+              </View>
             </View>
             <TouchableOpacity
               style={globalStyles.button}

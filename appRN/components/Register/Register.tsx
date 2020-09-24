@@ -1,17 +1,19 @@
 import React, {useState, useContext} from 'react';
-import {Button, StyleSheet, Text, TextInput, View} from 'react-native';
+import {Text, TextInput, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import Icon from 'react-native-vector-icons/Octicons';
 
 import Center from '../Center/Center';
 import {AuthContext} from '../AuthProvider/AuthProvider';
 import {AuthProps} from '../AuthStack/AuthStack';
-import {COLOR, globalStyles} from '../Style/styles';
+import {globalStyles} from '../Style/styles';
 import {Formik} from 'formik';
 import {RegisterSchema} from '../../Schema/AuthSchema';
 import {capitalizeFirstLetter} from '../../Utils/helpers';
 
 const Register = ({navigation}: AuthProps) => {
   const {registerError: errorMessage, register} = useContext(AuthContext);
+  const [secure, updateSecure] = useState<boolean>(true);
 
   return (
     <Center>
@@ -73,16 +75,25 @@ const Register = ({navigation}: AuthProps) => {
                   {capitalizeFirstLetter(props.errors.password)}
                 </Text>
               ) : null}
-              <TextInput
-                placeholder="Password"
-                onChangeText={props.handleChange('password')}
-                value={props.values.password}
-                secureTextEntry={true}
-                autoCompleteType="password"
-                textContentType="password"
-                selectTextOnFocus={true}
-                style={globalStyles.input}
-              />
+              <View style={{position: 'relative'}}>
+                <TextInput
+                  placeholder="Password"
+                  onChangeText={props.handleChange('password')}
+                  value={props.values.password}
+                  secureTextEntry={secure}
+                  autoCompleteType="password"
+                  textContentType="password"
+                  selectTextOnFocus={true}
+                  style={globalStyles.input}
+                />
+                <Icon
+                  style={{position: 'absolute', right: 0, bottom: 11}}
+                  name={secure ? 'eye' : 'eye-closed'}
+                  size={18}
+                  color="gray"
+                  onPress={() => updateSecure(!secure)}
+                />
+              </View>
             </View>
             <TouchableOpacity
               style={globalStyles.button}
