@@ -1,23 +1,27 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Modal,
-  Button,
-} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Modal} from 'react-native';
 import ImageCropPicker, {Options} from 'react-native-image-crop-picker';
-import Video from 'react-native-video';
 import Icon from 'react-native-vector-icons/AntDesign';
+import VideoPlayer from 'react-native-video-player';
 
 import {windowHeight, windowWidth} from '../../Utils/dimension';
 import Center from '../Center/Center';
 import {COLOR, globalStyles} from '../Style/styles';
 
+interface VideoInfo {
+  width: number | undefined;
+  height: number | undefined;
+  duration: number | undefined;
+}
+
 const Upload = () => {
   const [videoPath, setVideoPath] = React.useState<string | null>(null);
   const [modalOpen, setModalOpen] = React.useState<boolean | undefined>(false);
+  const [videoInfo, updateVideoInfo] = React.useState<VideoInfo>({
+    width: undefined,
+    height: undefined,
+    duration: undefined,
+  });
 
   const videoOptions: Options = {
     compressVideoPreset: 'HighestQuality',
@@ -25,6 +29,7 @@ const Upload = () => {
   };
 
   const takeVideo = async () => {
+    console.log(this);
     try {
       const recordedVideo = await ImageCropPicker.openCamera(videoOptions);
       console.log(recordedVideo);
@@ -36,11 +41,17 @@ const Upload = () => {
   };
 
   const getVideoFromLibrary = async () => {
+    console.log(this);
     try {
       const pickedVideo = await ImageCropPicker.openPicker(videoOptions);
       console.log(pickedVideo);
       setVideoPath(pickedVideo.path);
       setModalOpen(true);
+      updateVideoInfo({
+        width: pickedVideo.width,
+        height: pickedVideo.height,
+        duration: pickedVideo.duration!,
+      });
     } catch (error) {
       console.log(error);
     }
@@ -75,12 +86,11 @@ const Upload = () => {
             <Icon name="close" size={24} onPress={() => setModalOpen(false)} />
           </View>
           <View style={styles.videoWrapper}>
-            <Video
-              source={{uri: videoPath!}}
-              style={styles.video}
-              controls={true}
-              fullscreen={true}
+            <VideoPlayer
+              video={{uri: videoPath!}}
               resizeMode="contain"
+              duration={videoInfo.duration}
+              videoWidth={videoInfo.width}
             />
           </View>
           <View>
@@ -122,8 +132,7 @@ const styles = StyleSheet.create({
     maxHeight: windowHeight * 0.8,
   },
   video: {
-    width: windowWidth,
-    height: windowHeight * 0.6,
+    flex: 1,
     // borderTopColor: COLOR.accentColor,
     // borderBottomColor: COLOR.accentColor,
     // borderWidth: StyleSheet.hairlineWidth,
