@@ -2,13 +2,12 @@ import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Modal} from 'react-native';
 import ImageCropPicker, {Options} from 'react-native-image-crop-picker';
 import Icon from 'react-native-vector-icons/AntDesign';
-import VideoPlayer from 'react-native-video-player';
 
-import {windowHeight, windowWidth} from '../../Utils/dimension';
 import Center from '../Center/Center';
 import {COLOR, globalStyles} from '../Style/styles';
+import VideoPreview from '../Video/VideoPreview';
 
-interface VideoInfo {
+export interface VideoInfo {
   width: number | undefined;
   height: number | undefined;
   duration: number | undefined;
@@ -41,7 +40,7 @@ const Upload = () => {
   };
 
   const getVideoFromLibrary = async () => {
-    console.log(this);
+    console.dir(this);
     try {
       const pickedVideo = await ImageCropPicker.openPicker(videoOptions);
       console.log(pickedVideo);
@@ -55,6 +54,10 @@ const Upload = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const saveToFirebase = async () => {
+    console.log('upload');
   };
 
   return (
@@ -85,16 +88,29 @@ const Upload = () => {
             <Text style={styles.subTitle}>Preview</Text>
             <Icon name="close" size={24} onPress={() => setModalOpen(false)} />
           </View>
-          <View style={styles.videoWrapper}>
-            <VideoPlayer
-              video={{uri: videoPath!}}
-              resizeMode="contain"
-              duration={videoInfo.duration}
-              videoWidth={videoInfo.width}
-            />
+          <View>
+            <VideoPreview uri={videoPath} videoInfo={videoInfo} />
           </View>
           <View>
-            <Text>Controls</Text>
+            <TouchableOpacity
+              style={globalStyles.button}
+              onPress={saveToFirebase}>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <Icon
+                  name="upload"
+                  size={18}
+                  color={COLOR.grayColor}
+                  style={{paddingRight: 10}}
+                />
+                <Text style={globalStyles.buttonText}>Upload</Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -124,17 +140,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     paddingHorizontal: 20,
-  },
-  videoWrapper: {
-    display: 'flex',
-    paddingVertical: 40,
-    backgroundColor: COLOR.black,
-    maxHeight: windowHeight * 0.8,
-  },
-  video: {
-    flex: 1,
-    // borderTopColor: COLOR.accentColor,
-    // borderBottomColor: COLOR.accentColor,
-    // borderWidth: StyleSheet.hairlineWidth,
   },
 });
