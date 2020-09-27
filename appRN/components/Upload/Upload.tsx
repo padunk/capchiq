@@ -1,11 +1,23 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Modal} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Modal,
+  ProgressBarAndroid,
+} from 'react-native';
 import ImageCropPicker, {Options} from 'react-native-image-crop-picker';
 import Icon from 'react-native-vector-icons/AntDesign';
+import RNFetchBlob from 'rn-fetch-blob';
+import {PolyfillBlob} from 'rn-fetch-blob';
+import {AuthContext} from '../AuthProvider/AuthProvider';
 
 import Center from '../Center/Center';
+import {firebaseDatabase, firebaseStorage} from '../Firebase/Firebase';
 import {COLOR, globalStyles} from '../Style/styles';
 import VideoPreview from '../Video/VideoPreview';
+import * as Progress from 'react-native-progress';
 
 export interface VideoInfo {
   width: number | undefined;
@@ -14,6 +26,12 @@ export interface VideoInfo {
 }
 
 const Upload = () => {
+  const Blob = RNFetchBlob.polyfill.Blob;
+  const fs = RNFetchBlob.fs;
+  window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
+  window.Blob = Blob;
+
+  const {user} = React.useContext(AuthContext);
   const [videoPath, setVideoPath] = React.useState<string | null>(null);
   const [modalOpen, setModalOpen] = React.useState<boolean | undefined>(false);
   const [videoInfo, updateVideoInfo] = React.useState<VideoInfo>({
@@ -21,6 +39,7 @@ const Upload = () => {
     height: undefined,
     duration: undefined,
   });
+  const [progress, updateProgress] = React.useState(0);
 
   const videoOptions: Options = {
     compressVideoPreset: 'HighestQuality',
@@ -57,7 +76,30 @@ const Upload = () => {
   };
 
   const saveToFirebase = async () => {
-    console.log('upload');
+    if (videoPath === '' || videoPath === null) {
+      return;
+    }
+
+    let uploadBlob: PolyfillBlob;
+
+    try {
+      const fileName: string = videoPath.match(/\w+.mp4/)![0];
+      const ref = firebaseStorage.ref('Videos/feed/' + user?.uid! + '/');
+      const imageBlob = await Blob.build(videoPath, {type: `video/mp4`});
+      uploadBlob = imageBlob;
+      const uploadTask: firebase.storage.UploadTask = ref.put(imageBlob, {
+        contentType: 'video/mp4',
+      });
+      uploadTask.on('state_changed', (snapshot) => {
+        updateProgress(() =>
+          Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 100),
+        );
+      });
+      uploadBlob.close();
+      const url = await ref.getDownloadURL();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -92,25 +134,30 @@ const Upload = () => {
             <VideoPreview uri={videoPath} videoInfo={videoInfo} />
           </View>
           <View>
-            <TouchableOpacity
-              style={globalStyles.button}
-              onPress={saveToFirebase}>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}>
-                <Icon
-                  name="upload"
-                  size={18}
-                  color={COLOR.grayColor}
-                  style={{paddingRight: 10}}
-                />
-                <Text style={globalStyles.buttonText}>Upload</Text>
-              </View>
-            </TouchableOpacity>
+            <View>
+              <Progress.Bar progress={progress} width={null} />
+            </View>
+            <View>
+              <TouchableOpacity
+                style={globalStyles.button}
+                onPress={saveToFirebase}>
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}>
+                  <Icon
+                    name="upload"
+                    size={18}
+                    color={COLOR.grayColor}
+                    style={{paddingRight: 10}}
+                  />
+                  <Text style={globalStyles.buttonText}>Upload</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
