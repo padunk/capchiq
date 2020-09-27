@@ -23,7 +23,7 @@ const VideoPreview = (props: Props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [paused, setPaused] = useState(false);
   const [playerState, setPlayerState] = useState(PLAYER_STATES.PLAYING);
-  const orientation = useOrientation();
+
   const {height, width} = useWindowDimensions();
 
   const onSeek = (seek: any) => {
@@ -56,7 +56,7 @@ const VideoPreview = (props: Props) => {
 
   const onEnd = () => {
     // Uncomment this line if you choose repeat=false in the video player
-    setPlayerState(PLAYER_STATES.ENDED);
+    // setPlayerState(PLAYER_STATES.ENDED);
   };
 
   const onSeeking = (currentTime: any) => setCurrentTime(currentTime);
@@ -89,6 +89,7 @@ const VideoPreview = (props: Props) => {
         progress={currentTime}
         mainColor={COLOR.primaryColor}
         showOnStart={false}
+        fadeOutDelay={3000}
       />
     </View>
   );
