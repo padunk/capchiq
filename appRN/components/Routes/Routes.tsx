@@ -4,9 +4,8 @@
  */
 
 import React, {useState, useEffect, useContext} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
 
-import firebase from '../Firebase/Firebase';
+import {firebase} from '../Firebase/Firebase';
 import Loading from '../Loading/Loading';
 import AuthStack from '../AuthStack/AuthStack';
 import AppTab from '../AppTab/AppTab';
