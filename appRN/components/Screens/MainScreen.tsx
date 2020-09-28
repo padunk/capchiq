@@ -8,11 +8,9 @@ import React from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import {
   createStackNavigator,
-  StackNavigationOptions,
   StackNavigationProp,
 } from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
-import Layout from '../Layout/Layout';
 import Routes from '../Routes/Routes';
 import OnboardingScreen from './OnboardingScreen';
 import AuthProvider from '../AuthProvider/AuthProvider';
