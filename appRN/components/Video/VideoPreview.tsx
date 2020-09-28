@@ -11,7 +11,7 @@ const noop = () => {};
 
 interface Props {
   uri: string | null;
-  videoInfo: VideoProps;
+  videoInfo: VideoProps | null;
 }
 
 const VideoPreview = (props: Props) => {
