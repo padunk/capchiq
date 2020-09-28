@@ -5,40 +5,33 @@ import {
   TouchableOpacity,
   StyleSheet,
   Modal,
-  ProgressBarAndroid,
+  Pressable,
 } from 'react-native';
-import ImageCropPicker, {Options} from 'react-native-image-crop-picker';
+import ImageCropPicker, {Options, Video} from 'react-native-image-crop-picker';
 import Icon from 'react-native-vector-icons/AntDesign';
 import RNFetchBlob from 'rn-fetch-blob';
 import {PolyfillBlob} from 'rn-fetch-blob';
 import {AuthContext} from '../AuthProvider/AuthProvider';
 
 import Center from '../Center/Center';
-import {firebaseDatabase, firebaseStorage} from '../Firebase/Firebase';
+import {firebaseStorage} from '../Firebase/Firebase';
 import {COLOR, globalStyles} from '../Style/styles';
 import VideoPreview from '../Video/VideoPreview';
 import * as Progress from 'react-native-progress';
-
-export interface VideoInfo {
-  width: number | undefined;
-  height: number | undefined;
-  duration: number | undefined;
-}
+import {saveVideoData} from '../Firebase/firebaseFunc';
 
 const Upload = () => {
   const Blob = RNFetchBlob.polyfill.Blob;
   const fs = RNFetchBlob.fs;
+  // @ts-ignore
   window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
+  // @ts-ignore
   window.Blob = Blob;
 
   const {user} = React.useContext(AuthContext);
   const [videoPath, setVideoPath] = React.useState<string | null>(null);
   const [modalOpen, setModalOpen] = React.useState<boolean | undefined>(false);
-  const [videoInfo, updateVideoInfo] = React.useState<VideoInfo>({
-    width: undefined,
-    height: undefined,
-    duration: undefined,
-  });
+  const [videoInfo, updateVideoInfo] = React.useState<Video | null>(null);
   const [progress, updateProgress] = React.useState(0);
 
   const videoOptions: Options = {
@@ -47,29 +40,25 @@ const Upload = () => {
   };
 
   const takeVideo = async () => {
-    console.log(this);
+    console.log('THIS:', this);
     try {
       const recordedVideo = await ImageCropPicker.openCamera(videoOptions);
       console.log(recordedVideo);
       setVideoPath(recordedVideo.path);
       setModalOpen(true);
+      updateVideoInfo(recordedVideo);
     } catch (error) {
       console.log(error);
     }
   };
 
   const getVideoFromLibrary = async () => {
-    console.dir(this);
     try {
       const pickedVideo = await ImageCropPicker.openPicker(videoOptions);
       console.log(pickedVideo);
       setVideoPath(pickedVideo.path);
       setModalOpen(true);
-      updateVideoInfo({
-        width: pickedVideo.width,
-        height: pickedVideo.height,
-        duration: pickedVideo.duration!,
-      });
+      updateVideoInfo(pickedVideo);
     } catch (error) {
       console.log(error);
     }
@@ -81,26 +70,48 @@ const Upload = () => {
     }
 
     let uploadBlob: PolyfillBlob;
+    const fileName: string = videoPath.match(/\w+.mp4/)![0];
 
     try {
-      const fileName: string = videoPath.match(/\w+.mp4/)![0];
-      const ref = firebaseStorage.ref('Videos/feed/' + user?.uid! + '/');
-      const imageBlob = await Blob.build(videoPath, {type: `video/mp4`});
+      const ref: firebase.storage.Reference = firebaseStorage
+        .ref('Videos/feed/')
+        .child(user?.uid! + '/' + fileName);
+
+      const data = await fs.readFile(videoPath, 'base64');
+      // @ts-ignore
+      const imageBlob: PolyfillBlob = await Blob.build(data, {
+        type: `${videoInfo?.mime};BASE64`,
+      });
       uploadBlob = imageBlob;
       const uploadTask: firebase.storage.UploadTask = ref.put(imageBlob, {
-        contentType: 'video/mp4',
+        contentType: videoInfo?.mime,
       });
-      uploadTask.on('state_changed', (snapshot) => {
-        updateProgress(() =>
-          Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 100),
-        );
-      });
-      uploadBlob.close();
-      const url = await ref.getDownloadURL();
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          updateProgress(
+            () => (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
+          );
+        },
+        (error) => {
+          throw new Error(error.message);
+        },
+        async () => {
+          const url = await uploadTask.snapshot.ref.getDownloadURL();
+          console.log('url :>> ', url);
+          // saveVideoData();
+          uploadBlob.close();
+          setModalOpen(false);
+          updateProgress(0);
+        },
+      );
     } catch (error) {
       console.error(error);
     }
   };
+
+  // when to call this, when progress is === 100?
+  // createAlert('Video uploaded successfully', '');
 
   return (
     <Center>
@@ -134,13 +145,26 @@ const Upload = () => {
             <VideoPreview uri={videoPath} videoInfo={videoInfo} />
           </View>
           <View>
+            {progress > 0 && (
+              <View style={{height: 10}}>
+                <Progress.Bar
+                  progress={progress}
+                  width={null}
+                  color={COLOR.primaryColor}
+                  borderRadius={0}
+                />
+              </View>
+            )}
             <View>
-              <Progress.Bar progress={progress} width={null} />
-            </View>
-            <View>
-              <TouchableOpacity
-                style={globalStyles.button}
-                onPress={saveToFirebase}>
+              <Pressable
+                style={({pressed}) => [
+                  {
+                    backgroundColor: pressed ? 'rgb(210, 230, 255)' : 'white',
+                  },
+                  globalStyles.button,
+                ]}
+                onPress={saveToFirebase}
+                disabled={progress > 0}>
                 <View
                   style={{
                     display: 'flex',
@@ -156,7 +180,7 @@ const Upload = () => {
                   />
                   <Text style={globalStyles.buttonText}>Upload</Text>
                 </View>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
         </View>
