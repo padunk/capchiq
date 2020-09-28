@@ -14,6 +14,9 @@ export const COLOR = {
 };
 
 export const globalStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   title: {
     fontSize: 30,
     color: COLOR.primaryColor,
