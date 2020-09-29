@@ -1,31 +1,31 @@
 import {firebaseDatabase} from './Firebase';
 
-interface IVideoMetadata {
-  id: string;
-  ownerID: string;
-  title: string | null;
-  uri: string;
-  likeCount?: number | null | undefined;
-}
+export async function saveVideoData(
+  id: string,
+  ownerID: string,
+  uri: string,
+  title?: string | null,
+  likeCount?: number | null | undefined,
+) {
+  const timestamp = new Date().getTime();
 
-export function saveVideoData({
-  id,
-  ownerID,
-  title,
-  uri,
-  likeCount,
-}: IVideoMetadata) {
-  const timestamp = new Date().getTime;
+  if (title === null || title === undefined) {
+    title = '';
+  }
 
   if (likeCount === null || likeCount === undefined) {
     likeCount = 0;
   }
 
-  firebaseDatabase.ref('videos/' + id).set({
-    ownerID,
-    title,
-    uri,
-    timestamp,
-    likeCount,
-  });
+  try {
+    await firebaseDatabase.ref('videos/' + id).set({
+      ownerID,
+      title,
+      uri,
+      timestamp,
+      likeCount,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 }
