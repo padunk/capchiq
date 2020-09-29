@@ -1,64 +1,41 @@
-import React, {useState} from 'react';
-import {TouchableOpacity, StyleSheet, Text, View} from 'react-native';
-import ImagePicker, {ImagePickerOptions} from 'react-native-image-picker';
+import React from 'react';
+import {Button, Modal, StyleSheet, Text, View} from 'react-native';
+import {createStackNavigator} from '@react-navigation/stack';
+import UploadModal from './UploadModal';
 
-const UploadFile = () => {
-  const [videoSource, setVideoSource] = useState('');
+const ModalStack = createStackNavigator();
 
-  const selectVideoTapped = () => {
-    const options: ImagePickerOptions = {
-      title: 'Video Picker',
-      takePhotoButtonTitle: 'Take Video...',
-      mediaType: 'video',
-      videoQuality: 'medium',
-    };
-
-    ImagePicker.showImagePicker(options, (response) => {
-      console.log('Response = ', response);
-
-      if (response.didCancel) {
-        console.log('User cancelled video picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-      } else {
-        setVideoSource(response.uri);
-      }
-    });
-  };
-
+const UploadForm = ({navigation}: any) => {
   return (
     <View>
-      <Text>UploadFiles</Text>
-      <TouchableOpacity onPress={selectVideoTapped}>
-        <View style={[styles.avatar, styles.avatarContainer]}>
-          <Text>Select a Video</Text>
-        </View>
-      </TouchableOpacity>
-      <Text style={{margin: 8, textAlign: 'center'}}>{videoSource}</Text>
+      <Text>UPLOADING</Text>
+      <Button title="back" onPress={() => navigation.goBack()} />
+      <Button
+        title="to form"
+        onPress={() => navigation.navigate('Video Form')}
+      />
     </View>
+  );
+};
+
+const VideoForm = ({navigation}: any) => {
+  return (
+    <View>
+      <Text>FORM of video title, etc</Text>
+      <Button title="back" onPress={() => navigation.goBack()} />
+    </View>
+  );
+};
+
+const UploadFile = () => {
+  return (
+    <ModalStack.Navigator>
+      <ModalStack.Screen name="Upload Video" component={UploadForm} />
+      <ModalStack.Screen name="Video Form" component={VideoForm} />
+    </ModalStack.Navigator>
   );
 };
 
 export default UploadFile;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  avatarContainer: {
-    borderColor: '#9B9B9B',
-    borderWidth: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  avatar: {
-    borderRadius: 75,
-    width: 150,
-    height: 150,
-  },
-});
+const styles = StyleSheet.create({});
