@@ -3,7 +3,6 @@ import React, {useState, useRef} from 'react';
 import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import Video from 'react-native-video';
 import MediaControls, {PLAYER_STATES} from 'react-native-media-controls';
-import {Video as VideoProps} from 'react-native-image-crop-picker';
 
 import {COLOR} from '../Style/styles';
 
@@ -11,7 +10,6 @@ const noop = () => {};
 
 interface Props {
   uri: string | null;
-  videoInfo: VideoProps | null;
 }
 
 const VideoPreview = (props: Props) => {
