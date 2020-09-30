@@ -1,7 +1,26 @@
 import {firebaseDatabase} from './Firebase';
 
+export async function saveNewUserData(user: firebase.User) {
+  try {
+    await firebaseDatabase.ref('users/' + user.uid).set({
+      userName: user.displayName,
+      avatar: '',
+      // settings: [],
+      // idols: [],
+      // fans: [],
+    });
+
+    await firebaseDatabase.ref('follows/' + user.uid).set({
+      followID: [user.uid],
+      // followerID: []
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function saveVideoData(
-  id: string,
+  filename: string,
   ownerID: string,
   uri: string,
   title?: string | null,
@@ -18,13 +37,15 @@ export async function saveVideoData(
   }
 
   try {
-    await firebaseDatabase.ref('videos/' + id).set({
-      ownerID,
-      title,
-      uri,
-      timestamp,
-      likeCount,
-    });
+    await firebaseDatabase
+      .ref('videos/' + ownerID)
+      .child(filename)
+      .set({
+        title,
+        uri,
+        timestamp,
+        likeCount,
+      });
   } catch (error) {
     console.log(error);
   }

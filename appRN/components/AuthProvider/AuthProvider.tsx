@@ -1,6 +1,7 @@
 import React, {useState, createContext} from 'react';
 import * as firebase from 'firebase';
 import {NativeSyntheticEvent, NativeTouchEvent} from 'react-native';
+import {saveNewUserData} from '../Firebase/firebaseFunc';
 // import AsyncStorage from '@react-native-community/async-storage';
 
 type User = firebase.User | null;
@@ -60,6 +61,7 @@ function AuthProvider({children}: any) {
             throw new Error('user not found');
           }
           setUser(userCredentials.user);
+          saveNewUserData(userCredentials.user);
           return userCredentials.user.updateProfile({
             displayName: name.trim(),
           });
