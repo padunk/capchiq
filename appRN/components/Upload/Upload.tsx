@@ -1,10 +1,8 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Alert} from 'react-native';
 import ImageCropPicker, {Options, Video} from 'react-native-image-crop-picker';
 import RNFetchBlob from 'rn-fetch-blob';
 import {PolyfillBlob} from 'rn-fetch-blob';
-import 'react-native-get-random-values';
-import {v4 as uuidv4} from 'uuid';
 
 import {AuthContext} from '../AuthProvider/AuthProvider';
 import Center from '../Center/Center';
@@ -12,8 +10,10 @@ import {firebaseStorage} from '../Firebase/Firebase';
 import {COLOR, globalStyles} from '../Style/styles';
 import {saveVideoData} from '../Firebase/firebaseFunc';
 import UploadModal from './UploadModal';
+import {BottomTabProps} from '../AppTab/AppTab';
+import AlertComponent from '../Alert/Alert';
 
-const Upload = () => {
+const Upload = ({navigation}: BottomTabProps) => {
   const Blob = RNFetchBlob.polyfill.Blob;
   const fs = RNFetchBlob.fs;
   // @ts-ignore
@@ -64,16 +64,14 @@ const Upload = () => {
     let uploadBlob: PolyfillBlob;
     const fileName: string = videoPath.match(/\w+(?=.mp4)/)![0];
     const extension: string = '.' + videoPath.match(/\w+$/)![0];
-    const randomId = uuidv4();
-    const id = randomId + '_' + fileName;
 
     try {
       const ref: firebase.storage.Reference = firebaseStorage
         .ref('Videos/feed/')
-        .child(user?.uid! + '/' + id + extension);
+        .child(user?.uid! + '/' + fileName + extension);
 
       const data = await fs.readFile(videoPath, 'base64');
-      // @ts-ignore
+      // @ts-ignore Blob doesn't implicitly have build method. check it again
       const imageBlob: PolyfillBlob = await Blob.build(data, {
         type: `${videoInfo?.mime};BASE64`,
       });
@@ -81,27 +79,44 @@ const Upload = () => {
       const uploadTask: firebase.storage.UploadTask = ref.put(imageBlob, {
         contentType: videoInfo?.mime,
       });
+
       uploadTask.on(
         'state_changed',
         (snapshot) => {
+          // on progress
           updateProgress(
             () => (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
           );
         },
         (error) => {
+          // on error
           throw new Error(error.message);
         },
         async () => {
+          // on complete
           const url = await uploadTask.snapshot.ref.getDownloadURL();
-          saveVideoData(id, user!.uid, url);
+          saveVideoData(fileName, user!.uid, url);
 
           uploadBlob.close();
           setModalOpen(false);
           updateProgress(0);
+          // @ts-ignore idk why it didn't recognize navigate
+          navigation.navigate('Home');
+          AlertComponent({
+            title: 'Upload Success',
+            msg: '',
+            buttons: [{text: 'OK', onPress: () => {}}],
+            options: {cancelable: true},
+          });
         },
       );
     } catch (error) {
-      console.error(error);
+      AlertComponent({
+        title: 'Upload Error',
+        msg: error,
+        buttons: [{text: 'OK', onPress: () => {}}],
+        options: {cancelable: true},
+      });
     }
   };
 
