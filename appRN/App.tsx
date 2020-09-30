@@ -4,6 +4,7 @@
  */
 
 import * as React from 'react';
+import 'react-native-get-random-values';
 import MainScreen from './components/Screens/MainScreen';
 import {LogBox} from 'react-native';
 
