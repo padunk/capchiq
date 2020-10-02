@@ -2,14 +2,34 @@ import {firebaseDatabase} from './Firebase';
 
 export async function saveNewUserData(user: firebase.User) {
   try {
-    await firebaseDatabase.ref('users/' + user.uid).set({
-      userName: user.displayName,
-      avatar: '',
-      // settings: [],
-      // idols: [],
-      // fans: [],
-    });
+    // set public data
+    await firebaseDatabase
+      .ref('users/' + user.uid)
+      .child('public')
+      .set({
+        userName: user.displayName,
+        avatar: user.photoURL,
+        createdAt: user.metadata.creationTime,
+        updatedAt: user.metadata.creationTime,
+        idolsCount: 0,
+        fansCount: 0,
+      });
 
+    // set private data
+    await firebaseDatabase
+      .ref('users/' + user.uid)
+      .child('private')
+      .set({
+        email: user.email,
+        lastLogin: user.metadata.lastSignInTime,
+        phoneNumber: user.phoneNumber,
+        other: user.multiFactor.enrolledFactors,
+        createdAt: user.metadata.creationTime,
+        updatedAt: user.metadata.creationTime,
+        // settings: {},
+      });
+
+    // set first follow which is themselves, so user can see their own post later
     await firebaseDatabase.ref('follows/' + user.uid).set({
       followID: [user.uid],
       // followerID: []
@@ -41,6 +61,7 @@ export async function saveVideoData(
       .ref('videos/' + ownerID)
       .child(filename)
       .set({
+        filename,
         title,
         uri,
         timestamp,
