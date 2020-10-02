@@ -8,7 +8,7 @@ function Spacer({...props}) {
     marginRight: props.marginRight || 0,
     marginLeft: props.marginLeft || 0,
   };
-  return <View style={customMargin}></View>;
+  return <View style={customMargin} />;
 }
 
 export default Spacer;
