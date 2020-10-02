@@ -40,7 +40,12 @@ const Upload = ({navigation}: BottomTabProps) => {
       setModalOpen(true);
       updateVideoInfo(recordedVideo);
     } catch (error) {
-      console.log(error);
+      AlertComponent({
+        title: 'Error taking videos.',
+        msg: error,
+        buttons: [{text: 'OK', onPress: () => {}}],
+        options: {cancelable: true},
+      });
     }
   };
 
@@ -52,7 +57,12 @@ const Upload = ({navigation}: BottomTabProps) => {
       setModalOpen(true);
       updateVideoInfo(pickedVideo);
     } catch (error) {
-      console.log(error);
+      AlertComponent({
+        title: 'Error getting videos.',
+        msg: error,
+        buttons: [{text: 'OK', onPress: () => {}}],
+        options: {cancelable: true},
+      });
     }
   };
 
