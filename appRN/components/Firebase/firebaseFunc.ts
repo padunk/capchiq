@@ -7,12 +7,15 @@ export async function saveNewUserData(user: firebase.User) {
       .ref('users/' + user.uid)
       .child('public')
       .set({
-        userName: user.displayName,
-        avatar: user.photoURL,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
         createdAt: user.metadata.creationTime,
         updatedAt: user.metadata.creationTime,
         idolsCount: 0,
         fansCount: 0,
+        id: user.uid,
+        bio: '',
+        website: '',
       });
 
     // set private data
@@ -24,6 +27,7 @@ export async function saveNewUserData(user: firebase.User) {
         lastLogin: user.metadata.lastSignInTime,
         phoneNumber: user.phoneNumber,
         other: user.multiFactor.enrolledFactors,
+        birthDate: '',
         createdAt: user.metadata.creationTime,
         updatedAt: user.metadata.creationTime,
         // settings: {},
@@ -66,6 +70,7 @@ export async function saveVideoData(
         uri,
         timestamp,
         likeCount,
+        ownerID,
       });
   } catch (error) {
     console.log(error);
