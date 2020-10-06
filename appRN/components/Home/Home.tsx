@@ -1,30 +1,12 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  FlatList,
-  ListRenderItemInfo,
-  useWindowDimensions,
-  ScrollView,
-  VirtualizedList,
-  Platform,
-} from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import Video from 'react-native-video';
+import {View, StyleSheet, FlatList} from 'react-native';
 
-import Spacer from '../Spacer/Spacer';
 import HomeHeader from './components/HomeHeader';
 import {AuthContext} from '../AuthProvider/AuthProvider';
 import {BottomTabProps} from '../AppTab/AppTab';
 import {COLOR, globalStyles} from '../Style/styles';
 import {firebaseDatabase} from '../Firebase/Firebase';
-import IonIcons from 'react-native-vector-icons/Ionicons';
-import {HEIGHT, WIDTH} from '../../Utils/CONSTANTS';
-import VideoPreview from '../Video/VideoPreview';
 import Post from './components/Post';
-import {clockRunning} from 'react-native-reanimated';
 import Loading from '../Loading/Loading';
 
 type User = {
@@ -127,6 +109,7 @@ const Home = ({navigation}: BottomTabProps) => {
                 }
               }
             }
+            ListFooterComponent={() => <View style={{marginBottom: 70}} />}
           />
         ) : (
           <Loading />
