@@ -5,7 +5,7 @@ import IonIcons from 'react-native-vector-icons/Ionicons';
 const PostHeader = ({photoURL, displayName}) => {
   return (
     <View style={styles.wrapper}>
-      {photoURL === null ? (
+      {photoURL === null || photoURL === '' ? (
         <IonIcons name="person-circle" size={20} />
       ) : (
         <Image source={{uri: photoURL}} style={{width: 24, height: 24}} />
