@@ -5,9 +5,11 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 const PostFooter = ({likeCount, title}) => {
   return (
     <View style={styles.wrapper}>
-      <Text>{title}</Text>
-      <SimpleLineIcons name="fire" size={16} color="red" />
-      <Text style={styles.footer}>{likeCount}</Text>
+      <View style={styles.videoInfoBar}>
+        <SimpleLineIcons name="fire" size={20} color="red" />
+        <Text style={styles.likeCount}>{likeCount}</Text>
+      </View>
+      <Text style={styles.textFooter}>{title} - Awesome</Text>
     </View>
   );
 };
@@ -18,7 +20,14 @@ const styles = StyleSheet.create({
   wrapper: {
     padding: 8,
   },
-  footer: {
+  videoInfoBar: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  likeCount: {
+    marginLeft: 10,
+  },
+  textFooter: {
     fontSize: 16,
   },
 });
