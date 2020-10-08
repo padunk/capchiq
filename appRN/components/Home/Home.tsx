@@ -36,50 +36,56 @@ const Home = ({navigation}: BottomTabProps) => {
 
   useEffect(() => {
     async function getContents() {
-      // get followID
-      const followIdolID = await firebaseDatabase
-        .ref('/follows/' + user?.uid)
-        .child('followID')
-        .limitToFirst(20)
-        .once('value');
-      // turn it into an array ['id-1', 'id-2', ...]
-      const followIdolArray: string[] = Array.from(followIdolID.val());
-
-      // get idols public data
-      const followIdolData = followIdolArray.map((idol: string) => {
-        return firebaseDatabase
-          .ref('/users/' + idol)
-          .child('public')
+      try {
+        // get followID
+        const followIdolID = await firebaseDatabase
+          .ref('/follows/' + user?.uid)
+          .child('followID')
+          .limitToFirst(20)
           .once('value');
-      });
-      const idolSnapshots: firebase.database.DataSnapshot[] = await Promise.all(
-        followIdolData,
-      );
+        // turn it into an array ['id-1', 'id-2', ...]
+        const followIdolArray: string[] = Object.entries(followIdolID.val())
+          .filter((ar) => ar[1])
+          .map((id) => id[0]);
 
-      // get two newest videos from idols
-      const followIdolVideos = followIdolArray.map((idol: string) => {
-        return firebaseDatabase
-          .ref('/videos/')
-          .child(idol)
-          .orderByChild('timestamp')
-          .limitToLast(1)
-          .once('value');
-      });
-      const videoSnapshots: firebase.database.DataSnapshot[] = await Promise.all(
-        followIdolVideos,
-      );
+        // get idols public data
+        const followIdolData = followIdolArray.map((idol: string) => {
+          return firebaseDatabase
+            .ref('/users/' + idol)
+            .child('public')
+            .once('value');
+        });
+        const idolSnapshots: firebase.database.DataSnapshot[] = await Promise.all(
+          followIdolData,
+        );
 
-      let result: IIdolVideoPost[] = [];
-      idolSnapshots.forEach((idol, idx) => {
-        const videoObj = videoSnapshots[idx].val();
-        const videoKey = Object.keys(videoObj)[0];
-        const video = videoObj[videoKey!];
+        // get two newest videos from idols
+        const followIdolVideos = followIdolArray.map((idol: string) => {
+          return firebaseDatabase
+            .ref('/videos/')
+            .child(idol)
+            .orderByChild('timestamp')
+            .limitToLast(1)
+            .once('value');
+        });
+        const videoSnapshots: firebase.database.DataSnapshot[] = await Promise.all(
+          followIdolVideos,
+        );
 
-        result.push({user: idol.val(), video});
-      });
+        let result: IIdolVideoPost[] = [];
+        idolSnapshots.forEach((idol, idx) => {
+          const videoObj = videoSnapshots[idx].val();
+          const videoKey = Object.keys(videoObj)[0];
+          const video = videoObj[videoKey!];
 
-      console.log('result :>> ', result);
-      updateVideoFeeds(result);
+          result.push({user: idol.val(), video});
+        });
+
+        console.log('result :>> ', result);
+        updateVideoFeeds(result);
+      } catch (error) {
+        console.log('getContentsError :>> ', error);
+      }
     }
 
     getContents();
