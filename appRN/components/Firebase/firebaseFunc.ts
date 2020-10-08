@@ -26,7 +26,7 @@ export async function saveNewUserData(user: firebase.User) {
         email: user.email,
         lastLogin: user.metadata.lastSignInTime,
         phoneNumber: user.phoneNumber,
-        other: user.multiFactor.enrolledFactors,
+        mfa: user.multiFactor.enrolledFactors,
         birthDate: '',
         createdAt: user.metadata.creationTime,
         updatedAt: user.metadata.creationTime,
@@ -72,6 +72,52 @@ export async function saveVideoData(
         likeCount,
         ownerID,
       });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+type FollowType = {
+  fansID: string;
+  idolID: string;
+  wantToFollow: boolean;
+};
+
+export async function updateFollow({fansID, idolID, wantToFollow}: FollowType) {
+  const followRef = firebaseDatabase
+    .ref('/follows/' + fansID)
+    .child('followID');
+  const followerRef = firebaseDatabase
+    .ref('/follows/' + idolID)
+    .child('followerID');
+
+  try {
+    const idolSnapshot: firebase.database.DataSnapshot = await followRef
+      .orderByChild(idolID)
+      .limitToFirst(1)
+      .once('value');
+
+    if (idolSnapshot === null && wantToFollow) {
+      // create new row of data
+      const newIdol: any = {};
+      newIdol[idolID] = true;
+      followRef.set(newIdol);
+      followerRef.set(newIdol);
+    }
+
+    const updates: any = {};
+    if (idolSnapshot !== null && wantToFollow) {
+      // if data already exist, change the value to true
+
+      updates[idolID] = true;
+      followRef.update(updates);
+      followerRef.update(updates);
+    } else {
+      // if data already exist, change the value to false
+      updates[idolID] = false;
+      followRef.update(updates);
+      followerRef.update(updates);
+    }
   } catch (error) {
     console.log(error);
   }
