@@ -21,8 +21,9 @@ const concatString = (source: string, ...target: string[]): string =>
 export const capitalizeFirstLetter = (str: string): string =>
   concatString(toUpperCase(str.slice(0, 1)), toLowerCase(str.slice(1)));
 
-const getMonth = (str: string): number => new Date(str).getMonth();
-const getYear = (str: string): number => new Date(str).getFullYear();
+// get month and year from milliseconds eg: 1601369108294
+const getMonth = (milDate: number): number => new Date(milDate).getMonth();
+const getYear = (milDate: number): number => new Date(milDate).getFullYear();
 
-export const toMonthYear = (str: string): string =>
-  `${months[getMonth(str)]}  ${getYear(str)}`;
+export const toMonthYear = (strDate: number): string =>
+  `${months[getMonth(strDate)]}  ${getYear(strDate)}`;
