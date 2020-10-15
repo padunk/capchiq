@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Alert} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import ImageCropPicker, {Options, Video} from 'react-native-image-crop-picker';
 import RNFetchBlob from 'rn-fetch-blob';
 import {PolyfillBlob} from 'rn-fetch-blob';
@@ -139,7 +139,9 @@ const Upload = ({navigation}: BottomTabProps) => {
         <TouchableOpacity
           onPress={takeVideo}
           style={[globalStyles.button, styles.button]}>
-          <Text style={globalStyles.buttonText}>Take Video</Text>
+          <Text style={[globalStyles.buttonText, styles.buttonText]}>
+            Take Video
+          </Text>
         </TouchableOpacity>
       </View>
       <View>
@@ -172,5 +174,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
+    color: COLOR.white,
   },
 });
