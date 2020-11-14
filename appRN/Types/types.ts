@@ -1,31 +1,36 @@
 export type UserPublicData = {
-  displayName: string;
-  photoURL: string;
-  updatedAt: number;
+  bio?: string;
   createdAt: number;
-  idolsCount: number;
+  displayName: string;
   fansCount: number;
   id: string;
-  bio: string;
-  website: string;
+  idolsCount: number;
+  photoURL: string;
+  updatedAt: number;
+  website?: string;
 };
 
 export type UserPrivateData = {
-  email: string;
-  lastLogin: number;
-  phoneNumber: string;
-  mfa: firebase.auth.MultiFactorInfo[];
   birthDate: number;
   createdAt: number;
+  email: string;
+  lastLogin: number;
+  mfa: firebase.auth.MultiFactorInfo[];
+  phoneNumber: string;
   updatedAt: number;
   // settings: string;
 };
 
+export type UserData = {
+  private: UserPrivateData;
+  public: UserPublicData;
+};
+
 export type VideoData = {
   filename: string;
-  title: string;
-  uri: string;
-  timestamp: number;
   likeCount: number;
   ownerID: string;
+  timestamp: number;
+  title: string;
+  uri: string;
 };
