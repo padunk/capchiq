@@ -1,4 +1,4 @@
-import {firebaseDatabase} from './Firebase';
+import {firebaseDatabase, firebaseFunctions} from './Firebase';
 
 export async function saveNewUserData(user: firebase.User) {
   try {
