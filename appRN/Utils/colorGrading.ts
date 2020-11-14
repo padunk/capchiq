@@ -10,7 +10,7 @@ const hexToRGB = (hexColor: string): number[] | undefined => {
   return [r, g, b];
 };
 
-const rgbToHexColor = (r: number, g: number, b: number) =>
+const rgbToHexColor = (r: number, g: number, b: number): string =>
   `#${r.toString(16)}${g.toString(16)}${b.toString(16)}`;
 
 /**
@@ -19,7 +19,7 @@ const rgbToHexColor = (r: number, g: number, b: number) =>
  * @param {number} grading
  */
 
-export const generateColor = (color: string, grading = 500) => {
+export const generateColor = (color: string, grading = 500): string => {
   const grade = Object.freeze({
     100: 1.431,
     200: 1.386,
@@ -35,10 +35,10 @@ export const generateColor = (color: string, grading = 500) => {
     return color;
   }
 
-  const wrap = (c: number) => (g: number) =>
+  const wrap = (c: number) => (g: number): number =>
     Math.floor(c * g) > 255 ? 255 : Math.floor(c * g);
 
-  let [red, green, blue] = hexToRGB(color);
+  let [red, green, blue] = hexToRGB(color)!;
   red = wrap(red)(grade[grading]);
   green = wrap(green)(grade[grading]);
   blue = wrap(blue)(grade[grading]);
