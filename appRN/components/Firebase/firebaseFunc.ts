@@ -1,3 +1,4 @@
+import {UserData} from '../../Types/types';
 import {firebaseDatabase, firebaseFunctions} from './Firebase';
 
 export async function saveNewUserData(user: firebase.User) {
@@ -122,3 +123,22 @@ export async function updateFollow({fansID, idolID, wantToFollow}: FollowType) {
     console.log(error);
   }
 }
+
+export const getAuthUserData = async (id: string): Promise<UserData> => {
+  const data: UserData = {} as UserData;
+
+  const userPublicData = await firebaseDatabase
+    .ref('/users/' + id)
+    .child('public')
+    .once('value');
+
+  const userPrivateData = await firebaseDatabase
+    .ref('/users/' + id)
+    .child('private')
+    .once('value');
+
+  data.public = userPublicData.exportVal();
+  data.private = userPrivateData.exportVal();
+
+  return data;
+};
