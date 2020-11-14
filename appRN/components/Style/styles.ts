@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {StatusBar, StyleSheet} from 'react-native';
 
 export const COLOR = {
   primaryColor: '#8560eb',
@@ -78,5 +78,15 @@ export const globalStyles = StyleSheet.create({
   inform: {
     fontSize: 18,
     fontWeight: '600',
+  },
+  flexRow: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  justifyCenter: {
+    justifyContent: 'center',
+  },
+  itemsCenter: {
+    alignItems: 'center',
   },
 });
