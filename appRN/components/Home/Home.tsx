@@ -8,6 +8,7 @@ import {COLOR, globalStyles} from '../Style/styles';
 import {firebaseDatabase} from '../Firebase/Firebase';
 import Post from './components/Post';
 import Loading from '../Loading/Loading';
+import Separator from './components/Separator';
 
 type User = {
   createdAt: number;
@@ -102,19 +103,7 @@ const Home = ({navigation}: BottomTabProps) => {
             data={videoFeeds}
             renderItem={({item}) => <Post {...item} />}
             keyExtractor={(item: any) => item.user.displayName}
-            ItemSeparatorComponent={
-              class Test extends React.Component {
-                render() {
-                  return (
-                    <View style={{marginTop: 16, marginBottom: 8}}>
-                      <View
-                        style={{height: 1, backgroundColor: COLOR.grayColor}}
-                      />
-                    </View>
-                  );
-                }
-              }
-            }
+            ItemSeparatorComponent={Separator}
             ListFooterComponent={() => <View style={{marginBottom: 70}} />}
           />
         ) : (
