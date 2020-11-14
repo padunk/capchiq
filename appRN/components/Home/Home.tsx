@@ -1,34 +1,19 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
 
-import HomeHeader from './components/HomeHeader';
 import {AuthContext} from '../AuthProvider/AuthProvider';
 import {BottomTabProps} from '../AppTab/AppTab';
 import {COLOR, globalStyles} from '../Style/styles';
 import {firebaseDatabase} from '../Firebase/Firebase';
+import {UserData, VideoData} from '../../Types/types';
+import HomeHeader from './components/HomeHeader';
 import Post from './components/Post';
 import Loading from '../Loading/Loading';
 import Separator from './components/Separator';
 
-type User = {
-  createdAt: number;
-  displayName: string;
-  fansCount: number;
-  idolsCount: number;
-  photoURL: string | null;
-  updatedAt: number;
-};
-
-type Video = {
-  likeCount: number;
-  timestamp: number;
-  title: string | null;
-  uri: string;
-};
-
 interface IIdolVideoPost {
-  user: User;
-  video: Video;
+  user: UserData;
+  video: VideoData;
 }
 
 const Home = ({navigation}: BottomTabProps) => {
@@ -36,11 +21,11 @@ const Home = ({navigation}: BottomTabProps) => {
   const [videoFeeds, updateVideoFeeds] = useState<IIdolVideoPost[]>([]);
 
   useEffect(() => {
-    async function getContents() {
+    async function getContents(id: string) {
       try {
         // get followID
         const followIdolID = await firebaseDatabase
-          .ref('/follows/' + user?.uid)
+          .ref('/follows/' + id)
           .child('followID')
           .limitToFirst(20)
           .once('value');
@@ -89,8 +74,10 @@ const Home = ({navigation}: BottomTabProps) => {
       }
     }
 
-    getContents();
-  }, []);
+    if (user?.public.id) {
+      getContents(user?.public.id);
+    }
+  }, [user?.public.id]);
 
   return (
     <View style={globalStyles.container}>
