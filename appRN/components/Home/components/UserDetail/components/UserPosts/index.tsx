@@ -1,3 +1,4 @@
+import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useRef, useState} from 'react';
 import {
   ActivityIndicator,
@@ -15,8 +16,8 @@ import {firebaseDatabase} from '../../../../../Firebase/Firebase';
 import {COLOR} from '../../../../../Style/styles';
 
 const UserPosts = ({userData}) => {
+  const navigator = useNavigation();
   const [postContents, updatePostContents] = useState<any[] | null>(null);
-  // const [poster, setPoster] = useState<string | undefined>();
 
   useEffect(() => {
     async function getPosts(id: string) {
@@ -63,7 +64,7 @@ const UserPosts = ({userData}) => {
   const videoPlayer = useRef<Video | null>(null);
   const renderPosts = ({item}: any) => {
     return (
-      <Pressable onPress={() => console.log('post detail')}>
+      <Pressable onPress={() => navigator.navigate('PostDetail')}>
         <Video
           // source={{uri: item.uri}}
           source={require('../../../../../../assets/videos/50-beaches.mp4')}
