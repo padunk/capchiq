@@ -2,7 +2,12 @@ import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 
-const PostHeader = ({photoURL, displayName}) => {
+type IPostHeader = {
+  photoURL: string;
+  displayName: string;
+};
+
+const PostHeader: React.FC<IPostHeader> = ({photoURL, displayName}) => {
   return (
     <View style={styles.wrapper}>
       {photoURL === null || photoURL === '' ? (
