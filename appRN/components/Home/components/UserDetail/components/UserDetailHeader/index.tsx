@@ -120,7 +120,7 @@ const UserDetailHeader = ({userData}) => {
             <View style={globalStyles.flexRow}>
               <View style={styles.infoBodyWrapper}>
                 <Text style={styles.infoBody}>Videos</Text>
-                <Text style={styles.count}>{userData.fansCount}</Text>
+                <Text style={styles.count}>{userData.videoCount}</Text>
               </View>
               <View style={styles.infoBodyWrapper}>
                 <Text style={styles.infoBody}>Fans</Text>
