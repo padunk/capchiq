@@ -10,7 +10,7 @@ export const UserContext = createContext<UserProviderType>({
   setUserID: () => {},
 });
 
-function UserProvider({children}: any) {
+function UserProvider({children}: {children: React.ReactNode}) {
   const [userID, setUserID] = useState<string>('');
 
   const userValue: UserProviderType = {
