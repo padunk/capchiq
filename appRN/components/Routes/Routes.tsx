@@ -10,6 +10,7 @@ import Loading from '../Loading/Loading';
 import AuthStack from '../AuthStack/AuthStack';
 import AppTab from '../AppTab/AppTab';
 import {AuthContext} from '../AuthProvider/AuthProvider';
+import {getAuthUserData} from '../Firebase/firebaseFunc';
 
 const Routes = () => {
   const {user, setUser} = useContext(AuthContext);
@@ -20,11 +21,15 @@ const Routes = () => {
       if (usr) {
         // cookies? token?
         console.log('user is signed in:', user);
-        setUser(usr);
+        getAuthUserData(usr.uid)
+          .then((data) => setUser(data))
+          .catch((error) => {
+            throw new Error(error);
+          });
       }
       setLoading(false);
     });
-  }, [user]);
+  }, []);
 
   if (loading) {
     return <Loading />;

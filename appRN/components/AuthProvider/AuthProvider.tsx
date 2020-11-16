@@ -1,18 +1,18 @@
 import React, {useState, createContext} from 'react';
 import * as firebase from 'firebase';
 import {NativeSyntheticEvent, NativeTouchEvent} from 'react-native';
-import {saveNewUserData} from '../Firebase/firebaseFunc';
+import {getAuthUserData, saveNewUserData} from '../Firebase/firebaseFunc';
+import {UserData} from '../../Types/types';
 // import AsyncStorage from '@react-native-community/async-storage';
 
-type User = firebase.User | null;
 type SyntheticEvent = (ev: NativeSyntheticEvent<NativeTouchEvent>) => void;
 
 interface Provider {
-  user: User;
+  user: UserData;
   loginError: string | null;
   registerError: string | null;
   resetPasswordMessage: string | null;
-  setUser: React.Dispatch<React.SetStateAction<User>>;
+  setUser: React.Dispatch<React.SetStateAction<UserData>>;
   setLoginError: React.Dispatch<React.SetStateAction<string | null>>;
   setRegisterError: React.Dispatch<React.SetStateAction<string | null>>;
   register: Function;
@@ -36,7 +36,7 @@ export const AuthContext = createContext<Provider>({
 });
 
 function AuthProvider({children}: any) {
-  const [user, setUser] = useState<User>(null);
+  const [user, setUser] = useState<UserData | null>(null);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [registerError, setRegisterError] = useState<string | null>(null);
   const [resetPasswordMessage, setResetPasswordMessage] = useState<
@@ -60,7 +60,12 @@ function AuthProvider({children}: any) {
           if (userCredentials.user === null) {
             throw new Error('user not found');
           }
-          setUser(userCredentials.user);
+          getAuthUserData(userCredentials.user.uid)
+            .then((data) => setUser(data))
+            .catch((error) => {
+              throw new Error(error);
+            });
+
           saveNewUserData(userCredentials.user);
           return userCredentials.user.updateProfile({
             displayName: name.trim(),
@@ -72,11 +77,16 @@ function AuthProvider({children}: any) {
       firebase
         .auth()
         .signInWithEmailAndPassword(email, password)
-        .then((userCredentials: firebase.auth.UserCredential) =>
-          setUser(userCredentials.user),
-        )
+        .then((userCredentials: firebase.auth.UserCredential) => {
+          if (userCredentials.user)
+            getAuthUserData(userCredentials.user?.uid)
+              .then((data) => setUser(data))
+              .catch((error) => {
+                throw new Error(error);
+              });
+          // AsyncStorage.setItem('user', JSON.stringify())
+        })
         .catch((error) => setLoginError(error.message));
-      // AsyncStorage.setItem('user', JSON.stringify())
     },
     logout: () => {
       setUser(null);
