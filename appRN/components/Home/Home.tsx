@@ -74,7 +74,7 @@ const Home = ({navigation}: BottomTabProps) => {
       }
     }
 
-    if (user?.public.id) {
+    if (user !== undefined && user.hasOwnProperty('public')) {
       getContents(user?.public.id);
     }
   }, [user?.public.id]);
