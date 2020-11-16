@@ -8,11 +8,11 @@ import {UserData} from '../../Types/types';
 type SyntheticEvent = (ev: NativeSyntheticEvent<NativeTouchEvent>) => void;
 
 interface Provider {
-  user: UserData;
+  user: UserData | null;
   loginError: string | null;
   registerError: string | null;
   resetPasswordMessage: string | null;
-  setUser: React.Dispatch<React.SetStateAction<UserData>>;
+  setUser: React.Dispatch<React.SetStateAction<UserData | null>>;
   setLoginError: React.Dispatch<React.SetStateAction<string | null>>;
   setRegisterError: React.Dispatch<React.SetStateAction<string | null>>;
   register: Function;
