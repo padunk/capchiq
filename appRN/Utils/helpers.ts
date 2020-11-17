@@ -22,8 +22,12 @@ export const capitalizeFirstLetter = (str: string): string =>
   concatString(toUpperCase(str.slice(0, 1)), toLowerCase(str.slice(1)));
 
 // get month and year from milliseconds eg: 1601369108294
+const getDate = (milDate: number): number => new Date(milDate).getDate();
 const getMonth = (milDate: number): number => new Date(milDate).getMonth();
 const getYear = (milDate: number): number => new Date(milDate).getFullYear();
 
 export const toMonthYear = (strDate: number): string =>
   `${months[getMonth(strDate)]}  ${getYear(strDate)}`;
+
+export const toBirthDate = (strDate: number): string =>
+  `${getDate(strDate)}-${getMonth(strDate)}-${getYear(strDate)}`;
