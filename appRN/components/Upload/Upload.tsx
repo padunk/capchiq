@@ -29,6 +29,8 @@ const Upload = ({navigation}: BottomTabProps) => {
 
   const videoOptions: Options = {
     compressVideoPreset: 'HighestQuality',
+    hideBottomControls: true,
+    loadingLabelText: 'Getting video from library',
     mediaType: 'video',
   };
 
@@ -42,7 +44,7 @@ const Upload = ({navigation}: BottomTabProps) => {
     } catch (error) {
       AlertComponent({
         title: 'Error taking videos.',
-        msg: error,
+        msg: error.message,
         buttons: [{text: 'OK', onPress: () => {}}],
         options: {cancelable: true},
       });
@@ -59,7 +61,7 @@ const Upload = ({navigation}: BottomTabProps) => {
     } catch (error) {
       AlertComponent({
         title: 'Error getting videos.',
-        msg: error,
+        msg: error.message,
         buttons: [{text: 'OK', onPress: () => {}}],
         options: {cancelable: true},
       });
@@ -78,7 +80,7 @@ const Upload = ({navigation}: BottomTabProps) => {
     try {
       const ref: firebase.storage.Reference = firebaseStorage
         .ref('Videos/feed/')
-        .child(user?.uid! + '/' + fileName + extension);
+        .child(user?.public.id! + '/' + fileName + extension);
 
       const data = await fs.readFile(videoPath, 'base64');
       // @ts-ignore Blob doesn't implicitly have build method. check it again
@@ -105,7 +107,7 @@ const Upload = ({navigation}: BottomTabProps) => {
         async () => {
           // on complete
           const url = await uploadTask.snapshot.ref.getDownloadURL();
-          saveVideoData(fileName, user!.uid, url);
+          saveVideoData(fileName, user!.public.id, url);
 
           uploadBlob.close();
           setModalOpen(false);
@@ -123,7 +125,7 @@ const Upload = ({navigation}: BottomTabProps) => {
     } catch (error) {
       AlertComponent({
         title: 'Upload Error',
-        msg: error,
+        msg: error.message,
         buttons: [{text: 'OK', onPress: () => {}}],
         options: {cancelable: true},
       });
