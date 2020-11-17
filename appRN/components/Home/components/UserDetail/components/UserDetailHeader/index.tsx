@@ -1,25 +1,32 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {View, Text, StyleSheet, Image, Animated, Easing} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Animated,
+  Easing,
+  Button,
+} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import IonIcons from 'react-native-vector-icons/Ionicons';
+import {UserPublicData} from '../../../../../../Types/types';
 
 import {generateColor} from '../../../../../../Utils/colorGrading';
 import {toMonthYear} from '../../../../../../Utils/helpers';
 import {AuthContext} from '../../../../../AuthProvider/AuthProvider';
 import {firebaseDatabase} from '../../../../../Firebase/Firebase';
 import {updateFollow} from '../../../../../Firebase/firebaseFunc';
-import {UserContext} from '../../../../../Provider/UserProvider';
 import {COLOR, globalStyles} from '../../../../../Style/styles';
 
-const UserDetailHeader = ({userData}) => {
+const UserDetailHeader = ({userData}: {userData: UserPublicData}) => {
   const [subscribe, setSubscribe] = useState<boolean | null>(null);
-  const {userID} = useContext(UserContext);
   const {user} = useContext(AuthContext);
 
   useEffect(() => {
     // check for subscription
-    async function alreadyFollow(id: string) {
-      if (user?.uid === id) {
+    async function alreadyFollow(id: string, authUserID: string) {
+      if (id === authUserID) {
         setSubscribe(null);
         return;
       }
@@ -35,15 +42,17 @@ const UserDetailHeader = ({userData}) => {
       followIdolID.val()[id] ? setSubscribe(true) : setSubscribe(false);
     }
 
-    alreadyFollow(userID);
+    if (user?.public) {
+      alreadyFollow(userData.id, user?.public.id);
+    }
   }, []);
 
   const updateSubscription = () => {
     setSubscribe(!subscribe);
     // update database
     updateFollow({
-      fansID: user!.uid,
-      idolID: userID,
+      fansID: user!.public.id,
+      idolID: userData.id,
       wantToFollow: !subscribe!,
     });
   };

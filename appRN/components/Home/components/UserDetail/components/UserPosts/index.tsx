@@ -10,12 +10,13 @@ import {
 } from 'react-native';
 import {createThumbnail} from 'react-native-create-thumbnail';
 import Video from 'react-native-video';
+import {UserPublicData} from '../../../../../../Types/types';
 
 import {WIDTH} from '../../../../../../Utils/CONSTANTS';
 import {firebaseDatabase} from '../../../../../Firebase/Firebase';
 import {COLOR} from '../../../../../Style/styles';
 
-const UserPosts = ({userData}) => {
+const UserPosts = ({userData}: {userData: UserPublicData}) => {
   const navigator = useNavigation();
   const [postContents, updatePostContents] = useState<any[] | null>(null);
 

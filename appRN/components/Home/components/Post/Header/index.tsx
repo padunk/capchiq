@@ -1,13 +1,15 @@
 import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import IonIcons from 'react-native-vector-icons/Ionicons';
+import {UserPublicData} from '../../../../../Types/types';
 
 type IPostHeader = {
-  photoURL: string;
-  displayName: string;
+  user: UserPublicData;
 };
 
-const PostHeader: React.FC<IPostHeader> = ({photoURL, displayName}) => {
+const PostHeader: React.FC<IPostHeader> = ({user}) => {
+  const {displayName, photoURL} = user;
+
   return (
     <View style={styles.wrapper}>
       {photoURL === null || photoURL === '' ? (
