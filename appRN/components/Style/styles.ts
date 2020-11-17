@@ -58,12 +58,27 @@ export const globalStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  smallButtonPrimary: {
+    backgroundColor: COLOR.primaryColor,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 4,
+    height: 30,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   buttonText: {
     color: COLOR.grayColor,
     fontSize: 18,
     fontWeight: 'bold',
     letterSpacing: 1.34,
     textAlign: 'center',
+  },
+  smallButtonText: {
+    color: COLOR.white,
+    fontSize: 12,
+    fontWeight: '100',
   },
   error: {
     color: COLOR.redError,
@@ -88,5 +103,8 @@ export const globalStyles = StyleSheet.create({
   },
   itemsCenter: {
     alignItems: 'center',
+  },
+  strong: {
+    fontWeight: 'bold',
   },
 });
