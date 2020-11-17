@@ -14,6 +14,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import Routes from '../Routes/Routes';
 import OnboardingScreen from './OnboardingScreen';
 import AuthProvider from '../AuthProvider/AuthProvider';
+import UserProvider from '../Provider/UserProvider';
 
 type AppStackParamList = {
   Onboarding: undefined;
@@ -63,15 +64,17 @@ const MainScreen = () => {
 
   return (
     <AuthProvider>
-      <NavigationContainer>
-        <AppStack.Navigator
-          headerMode="none"
-          initialRouteName={routeName}
-          screenOptions={{header: () => null}}>
-          <AppStack.Screen name="Onboarding" component={OnboardingScreen} />
-          <AppStack.Screen name="Login" component={Routes} />
-        </AppStack.Navigator>
-      </NavigationContainer>
+      <UserProvider>
+        <NavigationContainer>
+          <AppStack.Navigator
+            headerMode="none"
+            initialRouteName={routeName}
+            screenOptions={{header: () => null}}>
+            <AppStack.Screen name="Onboarding" component={OnboardingScreen} />
+            <AppStack.Screen name="Login" component={Routes} />
+          </AppStack.Navigator>
+        </NavigationContainer>
+      </UserProvider>
     </AuthProvider>
   );
 };
