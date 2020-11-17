@@ -18,12 +18,11 @@ const UserDetail = () => {
         .child('public')
         .once('value');
 
-      console.log('idolSnapshot :>> ', idolSnapshot);
       setUserData(idolSnapshot.exportVal());
     }
 
     getUserData(userID);
-  }, []);
+  }, [userID]);
 
   return (
     <View style={styles.container}>
