@@ -2,7 +2,12 @@ import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
-const PostFooter = ({likeCount, title}) => {
+type IPostFooterProps = {
+  likeCount: number;
+  title: string;
+};
+
+const PostFooter: React.FC<IPostFooterProps> = ({likeCount, title}) => {
   return (
     <View style={styles.wrapper}>
       <View style={styles.videoInfoBar}>
@@ -26,6 +31,7 @@ const styles = StyleSheet.create({
   },
   likeCount: {
     marginLeft: 10,
+    fontWeight: 'bold',
   },
   textFooter: {
     fontSize: 16,
