@@ -2,11 +2,12 @@ export type UserPublicData = {
   bio?: string;
   createdAt: number;
   displayName: string;
-  fansCount: number;
+  fansCount?: number;
   id: string;
-  idolsCount: number;
+  idolsCount?: number;
   photoURL: string;
   updatedAt: number;
+  videoCount?: number;
   website?: string;
 };
 
@@ -17,8 +18,8 @@ export type UserPrivateData = {
   lastLogin: number;
   mfa: firebase.auth.MultiFactorInfo[];
   phoneNumber: string;
+  theme: string;
   updatedAt: number;
-  // settings: string;
 };
 
 export type UserData = {
