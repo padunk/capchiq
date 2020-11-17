@@ -6,8 +6,14 @@ import PostBody from './Body';
 import PostFooter from './Footer';
 import PostHeader from './Header';
 import {UserContext} from '../../../Provider/UserProvider';
+import {UserPublicData, VideoData} from '../../../../Types/types';
 
-const Post = (props: any) => {
+type IPostProps = {
+  user: UserPublicData;
+  video: VideoData;
+};
+
+const Post: React.FC<IPostProps> = ({user, video}) => {
   const navigation = useNavigation();
   const {setUserID} = useContext(UserContext);
 
@@ -15,18 +21,15 @@ const Post = (props: any) => {
     <View>
       <TouchableOpacity
         onPress={() => {
-          setUserID(props.user.id);
+          setUserID(user.id);
           navigation.navigate('UserDetail');
         }}>
-        <PostHeader
-          photoURL={props.user.photoURL}
-          displayName={props.user.displayName}
-        />
+        <PostHeader user={user} />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('PostDetail')}>
-        <PostBody uri={props.video.uri} />
+        <PostBody uri={video.uri} />
       </TouchableOpacity>
-      <PostFooter likeCount={props.video.likeCount} title={props.video.title} />
+      <PostFooter likeCount={video.likeCount} title={video.title} />
     </View>
   );
 };
