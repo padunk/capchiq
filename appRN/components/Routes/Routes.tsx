@@ -14,13 +14,12 @@ import {getAuthUserData} from '../Firebase/firebaseFunc';
 
 const Routes = () => {
   const {user, setUser} = useContext(AuthContext);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((usr) => {
+      setLoading(true);
       if (usr) {
-        // cookies? token?
-        console.log('user is signed in:', user);
         getAuthUserData(usr.uid)
           .then((data) => setUser(data))
           .catch((error) => {
