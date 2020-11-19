@@ -1,13 +1,13 @@
 import {createAsyncThunk, createSlice, SerializedError} from '@reduxjs/toolkit';
 import {IdolVideoPost, VideoData} from '../Types/types';
-import {getAllIdolVideos} from './asyncFunctions';
+import {dataAPI} from './dataAPI';
 import {RootState} from './store';
 
 export const getAllVideos = createAsyncThunk(
-  'videos/getAll',
+  'data/getVideosByIdol',
   async (userID: string, {rejectWithValue}) => {
     try {
-      const response = await getAllIdolVideos(userID);
+      const response = await dataAPI.getAllIdolVideos(userID);
       return response;
     } catch (error) {
       rejectWithValue(error.response.data);
