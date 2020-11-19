@@ -34,4 +34,10 @@ export type VideoData = {
   timestamp: number;
   title: string;
   uri: string;
+  videoID: string;
 };
+
+export interface IdolVideoPost {
+  user: UserPublicData;
+  video: VideoData;
+}
