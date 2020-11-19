@@ -1,5 +1,6 @@
 import {UserData} from '../../Types/types';
-import {firebaseDatabase, firebaseFunctions} from './Firebase';
+import {firebaseDatabase} from './Firebase';
+import {v4 as uuidv4} from 'uuid';
 
 export async function saveNewUserData(user: firebase.User) {
   try {
@@ -52,6 +53,7 @@ export async function saveVideoData(
   likeCount?: number | null | undefined,
 ) {
   const timestamp = new Date().getTime();
+  const videoID = uuidv4();
 
   if (title === null || title === undefined) {
     title = '';
@@ -67,12 +69,16 @@ export async function saveVideoData(
       .child(filename)
       .set({
         filename,
-        title,
-        uri,
-        timestamp,
         likeCount,
         ownerID,
+        timestamp,
+        title,
+        uri,
+        videoID,
       });
+    await firebaseDatabase.ref('likes/' + videoID).set({
+      [ownerID]: false,
+    });
   } catch (error) {
     console.log(error);
   }
@@ -124,21 +130,61 @@ export async function updateFollow({fansID, idolID, wantToFollow}: FollowType) {
   }
 }
 
-export const getAuthUserData = async (id: string): Promise<UserData> => {
+export const getAuthUserData = async (id: string): Promise<any> => {
   const data: UserData = {} as UserData;
+  try {
+    const userPublicData = await firebaseDatabase
+      .ref('/users/' + id)
+      .child('public')
+      .once('value');
 
-  const userPublicData = await firebaseDatabase
-    .ref('/users/' + id)
-    .child('public')
-    .once('value');
+    const userPrivateData = await firebaseDatabase
+      .ref('/users/' + id)
+      .child('private')
+      .once('value');
 
-  const userPrivateData = await firebaseDatabase
-    .ref('/users/' + id)
-    .child('private')
-    .once('value');
+    data.public = userPublicData.exportVal();
+    data.private = userPrivateData.exportVal();
 
-  data.public = userPublicData.exportVal();
-  data.private = userPrivateData.exportVal();
+    return data;
+  } catch (error) {
+    console.log('error', error);
+  }
+};
 
-  return data;
+export const checkLike = async (videoID: string, userID: string) => {
+  try {
+    const data = await firebaseDatabase
+      .ref('likes/' + videoID)
+      .child(userID)
+      .once('value');
+    return await data.exportVal();
+  } catch (error) {
+    console.log('error checkLike :>> ', error);
+    throw new Error(error);
+  }
+};
+
+export const likeUnlikeVideo = async (videoID: string, userID: string) => {
+  try {
+    const isLike = await checkLike(videoID, userID);
+    const likeRef = firebaseDatabase.ref('likes/' + videoID);
+
+    if (isLike === null) {
+      await likeRef.set({
+        [userID]: true,
+      });
+    } else if (isLike === false) {
+      await likeRef.update({
+        [userID]: true,
+      });
+    } else {
+      await likeRef.update({
+        [userID]: false,
+      });
+    }
+  } catch (error) {
+    console.log('error firebaseFunc 162', error);
+    throw new Error(error);
+  }
 };
