@@ -9,17 +9,23 @@ import Post from './components/Post';
 import Loading from '../Loading/Loading';
 import Separator from './components/Separator';
 import {useDispatch, useSelector} from 'react-redux';
-import {getAllVideos, selectVideoData} from '../../redux/slice';
+import {getVideosByIdol, selectVideoData} from '../../redux/slice';
+import {unwrapResult} from '@reduxjs/toolkit';
 
 const Home = ({navigation}: BottomTabProps) => {
   const {user} = useContext(AuthContext);
-  const {videos: videoFeeds} = useSelector(selectVideoData);
+  const {videos: videoFeeds, loading} = useSelector(selectVideoData);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (user?.public.id) {
-      dispatch(getAllVideos(user?.public.id));
-    }
+    const fetchIdolVideos = async (userID: string) => {
+      try {
+        await dispatch(getVideosByIdol(userID));
+      } catch (error) {
+        console.log('error :>> ', error);
+      }
+    };
+    if (user?.public.id) fetchIdolVideos(user?.public.id);
   }, []);
 
   return (
@@ -28,7 +34,13 @@ const Home = ({navigation}: BottomTabProps) => {
         <HomeHeader />
       </View>
       <View>
-        {videoFeeds !== undefined && videoFeeds.length > 0 ? (
+        {loading === 'pending' ? (
+          <Loading />
+        ) : videoFeeds !== undefined && videoFeeds.length === 0 ? (
+          <View style={globalStyles.container}>
+            <Text style={globalStyles.strong}>No Video yet</Text>
+          </View>
+        ) : (
           <FlatList
             data={videoFeeds}
             renderItem={({item}) => <Post {...item} />}
@@ -36,12 +48,6 @@ const Home = ({navigation}: BottomTabProps) => {
             ItemSeparatorComponent={Separator}
             ListFooterComponent={() => <View style={{marginBottom: 70}} />}
           />
-        ) : videoFeeds !== undefined && videoFeeds.length === 0 ? (
-          <View style={globalStyles.container}>
-            <Text style={globalStyles.strong}>No Video yet</Text>
-          </View>
-        ) : (
-          <Loading />
         )}
       </View>
     </View>

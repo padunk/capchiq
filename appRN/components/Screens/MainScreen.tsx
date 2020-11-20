@@ -15,7 +15,6 @@ import Routes from '../Routes/Routes';
 import OnboardingScreen from './OnboardingScreen';
 import AuthProvider from '../AuthProvider/AuthProvider';
 import UserProvider from '../Provider/UserProvider';
-import VideoProvider from '../Provider/VideoProvider';
 
 type AppStackParamList = {
   Onboarding: undefined;
@@ -66,17 +65,15 @@ const MainScreen = () => {
   return (
     <AuthProvider>
       <UserProvider>
-        <VideoProvider>
-          <NavigationContainer>
-            <AppStack.Navigator
-              headerMode="none"
-              initialRouteName={routeName}
-              screenOptions={{header: () => null}}>
-              <AppStack.Screen name="Onboarding" component={OnboardingScreen} />
-              <AppStack.Screen name="Login" component={Routes} />
-            </AppStack.Navigator>
-          </NavigationContainer>
-        </VideoProvider>
+        <NavigationContainer>
+          <AppStack.Navigator
+            headerMode="none"
+            initialRouteName={routeName}
+            screenOptions={{header: () => null}}>
+            <AppStack.Screen name="Onboarding" component={OnboardingScreen} />
+            <AppStack.Screen name="Login" component={Routes} />
+          </AppStack.Navigator>
+        </NavigationContainer>
       </UserProvider>
     </AuthProvider>
   );

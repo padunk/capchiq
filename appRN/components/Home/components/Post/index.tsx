@@ -7,7 +7,8 @@ import PostFooter from './Footer';
 import PostHeader from './Header';
 import {UserContext} from '../../../Provider/UserProvider';
 import {UserPublicData, VideoData} from '../../../../Types/types';
-import {VideoContext} from '../../../Provider/VideoProvider';
+import {useDispatch} from 'react-redux';
+import {videoSlice} from '../../../../redux/slice';
 
 type IPostProps = {
   user: UserPublicData;
@@ -17,7 +18,8 @@ type IPostProps = {
 const Post: React.FC<IPostProps> = ({user, video}) => {
   const navigation = useNavigation();
   const {setUserID} = useContext(UserContext);
-  const {setvideoDetail} = useContext(VideoContext);
+  const dispatch = useDispatch();
+  const {fetchVideoDetail} = videoSlice.actions;
 
   return (
     <View>
@@ -31,12 +33,16 @@ const Post: React.FC<IPostProps> = ({user, video}) => {
       <TouchableOpacity
         onPress={() => {
           setUserID(user.id);
-          setvideoDetail(video);
+          dispatch(fetchVideoDetail(video));
           navigation.navigate('PostDetail');
         }}>
         <PostBody uri={video.uri} />
       </TouchableOpacity>
-      <PostFooter likeCount={video.likeCount} title={video.title} />
+      <PostFooter
+        videoID={video.videoID}
+        likeCount={video.likeCount}
+        title={video.title}
+      />
     </View>
   );
 };

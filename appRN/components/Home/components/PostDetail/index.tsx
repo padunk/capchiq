@@ -2,23 +2,24 @@ import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import Video from 'react-native-video';
 import {WIDTH} from '../../../../Utils/CONSTANTS';
-import {VideoContext} from '../../../Provider/VideoProvider';
 import {UserContext} from '../../../Provider/UserProvider';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import {firebaseDatabase} from '../../../Firebase/Firebase';
 import {UserPublicData} from '../../../../Types/types';
 import PostHeader from '../Post/Header';
 import {COLOR, globalStyles} from '../../../Style/styles';
+import {useSelector} from 'react-redux';
+import {selectVideoData} from '../../../../redux/slice';
 
 const PostDetail = () => {
   const {userID} = useContext(UserContext);
-  const {videoDetail} = useContext(VideoContext);
+  const {video} = useSelector(selectVideoData);
   const [userData, setUserData] = useState<UserPublicData | null>(null);
   const [videoDimension, setVideoDimension] = React.useState({
     width: 0,
     height: 0,
   });
-  // {uri: videoDetail.uri}
+  // {uri: video.uri}
 
   useEffect(() => {
     async function getUserData(id: string) {
@@ -62,17 +63,17 @@ const PostDetail = () => {
       <View style={styles.info}>
         <View style={styles.videoInfoBar}>
           <SimpleLineIcons name="fire" size={24} color="red" />
-          <Text style={styles.likeCount}>{videoDetail?.likeCount}</Text>
+          <Text style={styles.likeCount}>{video.likeCount}</Text>
         </View>
         <View>
-          <Text>{videoDetail?.timestamp}</Text>
+          <Text>{video.timestamp}</Text>
         </View>
       </View>
 
       <View style={styles.titleContainer}>
         <Text style={styles.title}>
           <Text style={globalStyles.strong}>{userData?.displayName}: </Text>
-          {videoDetail?.title}
+          {video.title}
         </Text>
       </View>
 

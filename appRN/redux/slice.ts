@@ -3,7 +3,7 @@ import {IdolVideoPost, VideoData} from '../Types/types';
 import {dataAPI} from './dataAPI';
 import {RootState} from './store';
 
-export const getAllVideos = createAsyncThunk(
+export const getVideosByIdol = createAsyncThunk(
   'data/getVideosByIdol',
   async (userID: string, {rejectWithValue}) => {
     try {
@@ -27,19 +27,24 @@ const videoInitialState: VideoState = {} as VideoState;
 export const videoSlice = createSlice({
   name: 'videos',
   initialState: videoInitialState,
-  reducers: {},
+  reducers: {
+    fetchVideoDetail: (state, action) => {
+      state.video = action.payload;
+      return state;
+    },
+  },
   extraReducers: (builder) => {
-    builder.addCase(getAllVideos.pending, (state) => {
+    builder.addCase(getVideosByIdol.pending, (state) => {
       state.loading = 'pending';
       state.errorMessage = {};
     }),
-      builder.addCase(getAllVideos.fulfilled, (state, action) => {
+      builder.addCase(getVideosByIdol.fulfilled, (state, action) => {
         if (action.payload !== undefined) {
           state.videos = action.payload;
         }
         state.loading = 'idle';
       }),
-      builder.addCase(getAllVideos.rejected, (state, action) => {
+      builder.addCase(getVideosByIdol.rejected, (state, action) => {
         state.loading = 'idle';
         state.videos = [];
         state.errorMessage = action.error;
