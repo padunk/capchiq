@@ -1,17 +1,22 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Video from 'react-native-video';
-import {WIDTH} from '../../../../Utils/CONSTANTS';
-import {UserContext} from '../../../Provider/UserProvider';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import {firebaseDatabase} from '../../../Firebase/Firebase';
-import {UserPublicData} from '../../../../Types/types';
+import {useDispatch, useSelector} from 'react-redux';
 import PostHeader from '../Post/Header';
+import FireIcons from 'react-native-vector-icons/MaterialIcons';
+import {WIDTH} from '../../../../Utils/CONSTANTS';
 import {COLOR, globalStyles} from '../../../Style/styles';
-import {useSelector} from 'react-redux';
-import {selectVideoData} from '../../../../redux/slice';
+import {firebaseDatabase} from '../../../Firebase/Firebase';
+import {
+  PutVideoLikeByFilenameProps,
+  UserPublicData,
+} from '../../../../Types/types';
+import {AuthContext} from '../../../AuthProvider/AuthProvider';
+import {UserContext} from '../../../Provider/UserProvider';
+import {putVideoLikeByFilename, selectVideoData} from '../../../../redux/slice';
 
 const PostDetail = () => {
+  const {user} = useContext(AuthContext);
   const {userID} = useContext(UserContext);
   const {video} = useSelector(selectVideoData);
   const [userData, setUserData] = useState<UserPublicData | null>(null);
@@ -19,6 +24,15 @@ const PostDetail = () => {
     width: 0,
     height: 0,
   });
+  const dispatch = useDispatch();
+
+  const updateLike = async (data: PutVideoLikeByFilenameProps) => {
+    try {
+      await dispatch(putVideoLikeByFilename(data));
+    } catch (error) {
+      console.log('error updateLike', error);
+    }
+  };
   // {uri: video.uri}
 
   useEffect(() => {
@@ -62,7 +76,20 @@ const PostDetail = () => {
 
       <View style={styles.info}>
         <View style={styles.videoInfoBar}>
-          <SimpleLineIcons name="fire" size={24} color="red" />
+          <TouchableOpacity
+            onPress={() =>
+              updateLike({video: video, likeByID: user!.public.id})
+            }>
+            {video.likeByThisUser === true ? (
+              <FireIcons
+                name="local-fire-department"
+                size={20}
+                color="orangered"
+              />
+            ) : (
+              <FireIcons name="local-fire-department" size={20} color="gray" />
+            )}
+          </TouchableOpacity>
           <Text style={styles.likeCount}>{video.likeCount}</Text>
         </View>
         <View>
