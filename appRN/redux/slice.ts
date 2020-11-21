@@ -1,5 +1,9 @@
 import {createAsyncThunk, createSlice, SerializedError} from '@reduxjs/toolkit';
-import {IdolVideoPost, VideoData} from '../Types/types';
+import {
+  IdolVideoPost,
+  PutVideoLikeByFilenameProps,
+  VideoData,
+} from '../Types/types';
 import {dataAPI} from './dataAPI';
 import {RootState} from './store';
 
@@ -8,6 +12,30 @@ export const getVideosByIdol = createAsyncThunk(
   async (userID: string, {rejectWithValue}) => {
     try {
       const response = await dataAPI.getAllIdolVideos(userID);
+      return response;
+    } catch (error) {
+      rejectWithValue(error.response.data);
+    }
+  },
+);
+
+export const getVideoLikeCountByFilename = createAsyncThunk(
+  'data/getVideoLike',
+  async (video: VideoData, {rejectWithValue}) => {
+    try {
+      const response = await dataAPI.getLikeCount(video);
+      return response;
+    } catch (error) {
+      rejectWithValue(error.response.data);
+    }
+  },
+);
+
+export const putVideoLikeByFilename = createAsyncThunk(
+  'data/putVideoLike',
+  async ({video, likeByID}: PutVideoLikeByFilenameProps, {rejectWithValue}) => {
+    try {
+      const response = await dataAPI.updateVideoLike(video, likeByID);
       return response;
     } catch (error) {
       rejectWithValue(error.response.data);
@@ -30,7 +58,6 @@ export const videoSlice = createSlice({
   reducers: {
     fetchVideoDetail: (state, action) => {
       state.video = action.payload;
-      return state;
     },
   },
   extraReducers: (builder) => {
@@ -46,7 +73,47 @@ export const videoSlice = createSlice({
       }),
       builder.addCase(getVideosByIdol.rejected, (state, action) => {
         state.loading = 'idle';
-        state.videos = [];
+        state.errorMessage = action.error;
+      }),
+      builder.addCase(getVideoLikeCountByFilename.pending, (state) => {
+        state.loading = 'pending';
+        state.errorMessage = {};
+      }),
+      builder.addCase(
+        getVideoLikeCountByFilename.fulfilled,
+        (state, action) => {
+          if (action.payload !== undefined) {
+            const {videoID} = action.payload;
+            const videoIndex = state.videos.findIndex(
+              (post) => post.video.videoID === videoID,
+            );
+            state.videos[videoIndex].video = action.payload;
+            state.video = action.payload;
+          }
+          state.loading = 'idle';
+        },
+      ),
+      builder.addCase(getVideoLikeCountByFilename.rejected, (state, action) => {
+        state.loading = 'idle';
+        state.errorMessage = action.error;
+      }),
+      builder.addCase(putVideoLikeByFilename.pending, (state) => {
+        state.loading = 'pending';
+        state.errorMessage = {};
+      }),
+      builder.addCase(putVideoLikeByFilename.fulfilled, (state, action) => {
+        if (action.payload !== undefined) {
+          const {videoID} = action.payload;
+          const videoIndex = state.videos.findIndex(
+            (post) => post.video.videoID === videoID,
+          );
+          state.videos[videoIndex].video = action.payload;
+          state.video = action.payload;
+        }
+        state.loading = 'idle';
+      }),
+      builder.addCase(putVideoLikeByFilename.rejected, (state, action) => {
+        state.loading = 'idle';
         state.errorMessage = action.error;
       });
   },
