@@ -38,11 +38,7 @@ const Post: React.FC<IPostProps> = ({user, video}) => {
         }}>
         <PostBody uri={video.uri} />
       </TouchableOpacity>
-      <PostFooter
-        videoID={video.videoID}
-        likeCount={video.likeCount}
-        title={video.title}
-      />
+      <PostFooter {...video} />
     </View>
   );
 };
