@@ -30,6 +30,7 @@ export type UserData = {
 export type VideoData = {
   filename: string;
   likeCount: number;
+  likeByThisUser?: boolean;
   ownerID: string;
   timestamp: number;
   title: string;
@@ -41,3 +42,5 @@ export interface IdolVideoPost {
   user: UserPublicData;
   video: VideoData;
 }
+
+export type PutVideoLikeByFilenameProps = {video: VideoData; likeByID: string};
